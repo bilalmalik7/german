@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goethe-Zertifikat A1 · Prüfungssimulator</title>
+<style>
+:root{
+  --green:#0f7a4d; --green-dark:#0a5c3a; --green-light:#e6f4ee;
+  --ink:#1a2330; --muted:#5b6878; --bg:#f4f6f9; --card:#ffffff;
+  --red:#c43d3d; --amber:#b07d1e; --line:#dfe5ec; --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+header .logo{font-size:1.5rem;font-weight:800;letter-spacing:.5px;cursor:pointer}
+header .logo span{color:#ffd34d}
+header .sub{font-size:.8rem;opacity:.85}
+#timer{margin-left:auto;background:rgba(255,255,255,.15);padding:6px 14px;border-radius:20px;font-weight:700;font-variant-numeric:tabular-nums;display:none}
+#timer.warn{background:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.6}}
+main{max-width:980px;margin:0 auto;padding:24px 16px 80px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin-bottom:18px;box-shadow:0 1px 4px rgba(20,40,60,.05)}
+h1{font-size:1.7rem;margin-bottom:6px}
+h2{font-size:1.25rem;margin-bottom:12px;color:var(--green-dark)}
+h3{font-size:1.05rem;margin:14px 0 8px}
+p.lead{color:var(--muted);margin-bottom:16px}
+.grid{display:grid;gap:14px}
+.grid.c2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.grid.c4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.btn{display:inline-block;background:var(--green);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-size:1rem;font-weight:600;cursor:pointer;transition:.15s}
+.btn:hover{background:var(--green-dark)}
+.btn.sec{background:#fff;color:var(--green-dark);border:2px solid var(--green)}
+.btn.sec:hover{background:var(--green-light)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn.small{padding:6px 12px;font-size:.85rem}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.badge{display:inline-block;background:var(--green-light);color:var(--green-dark);border-radius:20px;padding:3px 12px;font-size:.78rem;font-weight:700;margin-right:6px}
+.badge.gray{background:#eef1f5;color:var(--muted)}
+.module-card{cursor:pointer;transition:.15s;position:relative}
+.module-card:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(20,40,60,.12)}
+.module-card .mod-icon{font-size:2rem}
+.module-card .score-chip{position:absolute;top:14px;right:14px;font-weight:800;font-size:.9rem;color:var(--green-dark)}
+.task-item{border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;background:#fff}
+.task-item .qnum{font-weight:800;color:var(--green-dark);margin-right:6px}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.opt{display:flex;align-items:flex-start;gap:10px;border:2px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer;transition:.12s;background:#fff}
+.opt:hover{border-color:var(--green)}
+.opt.sel{border-color:var(--green);background:var(--green-light)}
+.opt .letter{font-weight:800;color:var(--green-dark);min-width:22px}
+.opt.correct{border-color:var(--green);background:var(--green-light)}
+.opt.wrong{border-color:var(--red);background:#fbeaea}
+.rf{display:flex;gap:10px;margin-top:10px}
+.rf .opt{flex:1;justify-content:center}
+.readtext{background:#fbf8ef;border:1px solid #e8dfc2;border-radius:10px;padding:16px;font-family:Georgia,serif;white-space:pre-line;margin-bottom:14px}
+.sign{background:#fff;border:3px solid var(--ink);border-radius:8px;padding:14px 18px;text-align:center;font-weight:700;white-space:pre-line;margin-bottom:10px;max-width:420px}
+.sign .loc{display:block;font-weight:400;font-style:italic;color:var(--muted);font-size:.82rem;border:none;margin-bottom:6px}
+.website{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#f8fafc;white-space:pre-line}
+.website .url{color:#1255a0;font-weight:700;font-size:.9rem}
+.playbar{display:flex;align-items:center;gap:10px;background:var(--green-light);border-radius:10px;padding:10px 14px;margin:10px 0;flex-wrap:wrap}
+.playbar .count{font-size:.8rem;color:var(--muted)}
+input[type=text],textarea{width:100%;border:2px solid var(--line);border-radius:10px;padding:10px 12px;font-size:1rem;font-family:inherit}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--green)}
+textarea{min-height:160px;resize:vertical}
+.formtable{width:100%;border-collapse:collapse;margin-top:10px}
+.formtable td{border:1px solid var(--line);padding:9px 12px}
+.formtable td:first-child{background:#f4f7fa;font-weight:600;width:45%}
+.result-big{text-align:center;padding:30px 20px}
+.result-big .total{font-size:3.2rem;font-weight:900;color:var(--green-dark)}
+.result-big .pred{font-size:1.4rem;font-weight:700;margin-top:4px}
+.bar{height:12px;background:#e8edf2;border-radius:8px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--green);border-radius:8px}
+.feedback{margin-top:8px;padding:10px 14px;border-radius:10px;font-size:.92rem;display:none}
+.feedback.ok{background:var(--green-light);color:var(--green-dark);display:block}
+.feedback.no{background:#fbeaea;color:var(--red);display:block}
+.muster{background:#eef6ff;border:1px solid #c8defa;border-radius:10px;padding:14px;white-space:pre-line;font-family:Georgia,serif}
+.crit{display:flex;align-items:center;gap:10px;margin:6px 0}
+.crit select{border:2px solid var(--line);border-radius:8px;padding:6px}
+.speakcard{background:linear-gradient(135deg,#fff,#f0f7f3);border:2px solid var(--green);border-radius:14px;padding:26px;text-align:center;font-size:1.5rem;font-weight:800;cursor:pointer;min-height:120px;display:flex;flex-direction:column;justify-content:center;user-select:none}
+.speakcard .theme{font-size:.8rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.speakcard .answer{font-size:1rem;font-weight:400;color:var(--green-dark);margin-top:10px}
+.navrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.crumb{font-size:.85rem;color:var(--muted);margin-bottom:14px;cursor:pointer}
+.crumb:hover{color:var(--green-dark)}
+table.info{width:100%;border-collapse:collapse;font-size:.92rem}
+table.info th,table.info td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+table.info th{background:var(--green-light);color:var(--green-dark)}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.tag{font-size:.75rem;background:#eef1f5;border-radius:6px;padding:2px 8px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px}
+@media(max-width:640px){h1{font-size:1.3rem}.module-card .score-chip{position:static;display:block;margin-top:6px}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="logo" onclick="go('home')">Goethe <span>A1</span> Simulator</div>
+    <div class="sub">Start Deutsch 1 · Prüfungssimulator · Pakistan</div>
+  </div>
+  <div id="timer">20:00</div>
+</header>
+<main id="app"></main>
+<footer>Inoffizieller Übungssimulator nach dem Format des Goethe-Zertifikats A1 (Start Deutsch 1). Kein offizielles Produkt des Goethe-Instituts.</footer>
+<script>
+const EXAMS=[
+{name:"Modelltest 1",
+hoeren:{
+ teil1:[
+  {q:"Was kostet der Pullover?",opts:["Dreißig Euro.","Neunzehn Euro fünfundneunzig.","Fünfundneunzig Euro."],correct:1,script:[[0,"Entschuldigung, was kostet dieser Pullover jetzt? Da steht 30 Prozent billiger."],[1,"Einen Moment bitte … neunzehn Euro fünfundneunzig."],[0,"19 Euro 95?"],[1,"Ja, Euro natürlich."],[0,"Hm, okay, den nehme ich."]]},
+  {q:"Wie spät ist es?",opts:["15 Uhr.","Gleich 5 Uhr.","Halb 5 Uhr."],correct:1,script:[[0,"Ach, entschuldigen Sie bitte. Haben Sie eine Uhr? Wie spät ist es bitte?"],[1,"Ja, jetzt ist es gleich 5 Uhr."],[0,"Was, schon 5? Vielen Dank, Wiedersehen."]]},
+  {q:"Was isst die Frau im Restaurant?",opts:["Pommes.","Fisch.","Wurst."],correct:0,script:[[1,"Was wünschen Sie bitte?"],[0,"Ich hätte gern die Salatplatte."],[1,"Entschuldigung, die Salatplatte ist leider aus, aber die Bratwurst kann ich Ihnen empfehlen, ganz frisch heute."],[0,"Nein danke, ich esse kein Fleisch. Gibt es etwas ohne Fleisch?"],[1,"Ja, nicht mehr viel: Fisch oder Pommes."],[0,"Fisch … hm … tja, dann wohl die Pommes."]]},
+  {q:"In welche Klasse geht Frau Hegers Sohn?",opts:["In die neunte Klasse.","In die dritte Klasse.","In die vierte Klasse."],correct:1,script:[[1,"Haben Sie Kinder, Frau Heger?"],[0,"Ja, einen Sohn."],[1,"Und wie alt ist er?"],[0,"Neun Jahre, seit gestern."],[1,"Ah, dann geht er ja schon zur Schule?"],[0,"Ja klar, schon in die dritte Klasse."]]},
+  {q:"Wie kommt die Frau in den 2. Stock?",opts:["Mit dem Aufzug.","Auf der Treppe um die Ecke.","Mit der Rolltreppe."],correct:0,script:[[0,"Ach, entschuldigen Sie, wie komme ich denn hier in den zweiten Stock? Die Rolltreppe da vorn ist kaputt."],[1,"Da gehen Sie hier rechts um die Ecke und nehmen den Aufzug."],[0,"Um die Ecke rechts. Danke."]]},
+  {q:"Wohin fährt Herr Albers?",opts:["In Urlaub ans Meer.","Zur Familie.","Zur Arbeit."],correct:1,script:[[0,"Guten Morgen, Herr Albers. So früh schon bei der Arbeit?"],[1,"Ja, ich habe noch viel zu tun. Morgen fahre ich doch für drei Wochen weg."],[0,"Ach ja, das habe ich vergessen. Wohin fahren Sie denn?"],[1,"Zu meinen Verwandten nach Polen."],[0,"Na dann, schöne Zeit."]]}
+ ],
+ teil2:[
+  {s:"Die Kunden sollen die Weihnachtsfeier besuchen.",correct:false,script:[[1,"Liebe Kunden, zu Weihnachten bieten wir Ihnen Superpreise an. Zum Beispiel erstklassiger italienischer Weißwein für 12 Euro 78 die Flasche oder exklusiver argentinischer Rotwein für 9 Euro 68. Besuchen Sie uns im dritten Stock. Frohe Weihnachten."]]},
+  {s:"Die Fahrgäste sollen sich im Restaurant treffen.",correct:false,script:[[1,"Liebe Fahrgäste. Wir sind kurz vor Würzburg. Sicherlich haben Sie schon Hunger. An der nächsten Raststätte halten wir für eine Stunde. Wir treffen uns wieder um halb eins am Bus, aber bitte pünktlich sein."]]},
+  {s:"Die Fahrgäste sollen im Zug bleiben.",correct:true,script:[[0,"Liebe Fahrgäste! Bitte beachten Sie: Das ist ein außerplanmäßiger Halt. Bitte hier nicht aussteigen. In ein paar Minuten erreichen wir den Bahnhof Bonn – Bad Godesberg."]]},
+  {s:"Der Herr soll sofort zum Schalter kommen.",correct:true,script:[[0,"Herr Stefan Janda, gebucht auf dem Flug LH 737 nach Warschau, wird zum Schalter F7 gebeten. Der Flug wird in ein paar Minuten geschlossen. Herr Janda, gebucht nach Warschau, bitte nach F7."]]}
+ ],
+ teil3:[
+  {q:"Die Nummer ist:",opts:["11833.","11883.","12833."],correct:0,script:[[1,"Telefonansagedienst der deutschen Telekom. Die Rufnummer des Teilnehmers hat sich geändert. Bitte rufen Sie die Telefon-Auskunft an unter eins eins acht drei drei."]]},
+  {q:"Wo genau treffen sich die Männer?",opts:["Am Zug.","Am Bahnhof.","An der Information."],correct:2,script:[[1,"Hallo Jan, hier ist Boris. Du, ich bin noch im Zug. Du holst mich doch vom Bahnhof ab? Ich warte an der Information auf dich."]]},
+  {q:"Wie lange will der Mann noch warten?",opts:["20 Minuten.","2 Minuten.","10 Minuten."],correct:2,script:[[1,"Mensch Jan, hier noch mal Boris. Ich bin jetzt am Bahnhof. Und du? Wo bist du denn? Ich warte schon über 20 Minuten auf dich. Zehn Minuten Zeit hast du noch, bis 2, dann nehme ich ein Taxi."]]},
+  {q:"An welchem Tag will die Frau kommen?",opts:["Am Montag.","Am Sonntag.","Am Samstag."],correct:1,script:[[0,"Guten Tag, hier Rogalla. Wir können am Samstag leider nicht zu Ihnen kommen. Am Sonntag haben wir aber Zeit. Rufen Sie uns doch bitte zurück, ob Ihnen das passt. Danke."]]},
+  {q:"Was ist kaputt?",opts:["Der Fernseher.","Der Computer.","Das Handy."],correct:1,script:[[1,"Hallo Alex, Walter hier. Kannst du schnell mal rüberkommen? Mein Computer hat einen Fehler. Ich kann nichts drucken. Melde dich doch bitte gleich, wenn du nach Hause kommst."]]}
+ ]},
+lesen:{
+ teil1:[
+  {text:"Hallo Li,\ndanke für deine Mail. Dein Zug kommt hier in Hannover um 12.36 Uhr an. Ich bin ab 12.15 Uhr im Hauptbahnhof und warte auf dich vor der Auskunft.\nDu kannst mich den ganzen Vormittag auf meinem Handy (0173 6220559) erreichen.\nDeine Karin",
+   items:[{s:"Lis Zug kommt nach halb eins an.",correct:true},{s:"Karin wartet den ganzen Vormittag vor der Auskunft.",correct:false}]},
+  {text:"Liebe Carmen,\nam kommenden Sonntag habe ich Geburtstag. Ich möchte gerne mit dir feiern und lade dich herzlich zu meiner Party am Samstagabend ein. Wir fangen um 21 Uhr an. Ist das okay für dich? Es werden viele Leute da sein, die du auch kennst. Kannst du vielleicht einen Salat mitbringen? Und vergiss bitte nicht einen Pullover oder eine Jacke! Wir wollen nämlich draußen im Garten feiern.\nIch freue mich sehr auf dich!\nBis zum Wochenende\nRalf",
+   items:[{s:"Ralf hatte am letzten Wochenende Geburtstag.",correct:false},{s:"Ralf hat nur zwei oder drei Leute eingeladen.",correct:false},{s:"Die Party findet draußen statt.",correct:true}]}
+ ],
+ teil2:[
+  {sit:"Sie möchten mit dem Schiff auf dem Rhein fahren.",a:{url:"www.schiff-ruedesheim.de",txt:"Hotel – Pension „Schiff“\nEinzel- und Doppelzimmer mit Dusche/WC\nRestaurant mit Rhein-Terrasse"},b:{url:"www.bingen-ruedesheimer.de",txt:"Bingen-Rüdesheimer Rheinschiffe\ntäglich von Rüdesheim nach Koblenz\nalle Abfahrtszeiten und Preise"},correct:1},
+  {sit:"Sie möchten Deutsch in Deutschland lernen.",a:{url:"www.sprachenfuchs.de",txt:"Sprachinstitut Fuchs · Dresden, Prager Str. 4\nDeutsch · Englisch · Französisch · Russisch\nDie Kurse – Die Preise – Kontakt"},b:{url:"www.eviva.com",txt:"Eviva-Idiomas\nSprachkurse für Deutsche\nSpanisch auf Mallorca · Englisch auf Malta"},correct:0},
+  {sit:"Sie möchten ein Zugticket im Internet kaufen.",a:{url:"www.DER.com",txt:"Deutsches Reisebüro\nTicketbestellungen und Reservierungen für Flüge weltweit, Deutsche Bahn, Eurobus, 24-Stunden-Service"},b:{url:"www.RED.com",txt:"Reisedienst GmbH\nTicketservice für Theater, Konzerte, Busreisen in Deutschland und nach Polen, Tschechien und Ungarn"},correct:0},
+  {sit:"Sie möchten Informationen über den Bodensee.",a:{url:"www.bodensee.de",txt:"Bodensee – Touristeninformation\nUrlaubsorte · Ferienwohnungen · Hotelservice · Rundreisen"},b:{url:"www.rottenmeier.de",txt:"Hans Rottenmeier\nFerienwohnungen am Bodensee\nHäuser – Preise – Kontakt"},correct:0},
+  {sit:"Sie sind in Wiesbaden und möchten mit dem Zug am Mittag in Hamburg sein.",a:{url:"www.reiseauskunft.bahn.de",txt:"ab Hamburg 12.18 Uhr\nan Wiesbaden 16.52 Uhr\nDauer 4:34 · 1× umsteigen"},b:{url:"www.reiseauskunft.bahn.de",txt:"ab Wiesbaden 08.09 Uhr\nan Hamburg 12.40 Uhr\nDauer 4:31 · 1× umsteigen"},correct:1}
+ ],
+ teil3:[
+  {loc:"An der Tür der Sprachschule",sign:"SPRACHZENTRUM\nDas Sprachzentrum ist umgezogen.\nSie finden uns jetzt in der Beethovenstr. 23",s:"Zum Deutschlernen gehen Sie in die Beethovenstraße 23.",correct:true},
+  {loc:"An der Post",sign:"Öffnungszeiten:\nmontags – freitags 8.00 – 12.00 und 13.00 – 18.00\nsamstags 8.00 – 12.00",s:"Es ist Samstagnachmittag. Sie können auf der Post Briefmarken kaufen.",correct:false},
+  {loc:"Am Bahnhof",sign:"Auf dem gesamten Bahnhof\nist das Rauchen verboten.",s:"Sie können hier Zigaretten rauchen.",correct:false},
+  {loc:"Eingang Restaurant",sign:"Heute im Bavaria:\nBayerischer Abend\nBrezeln, Weißwürste, Sauerkraut\nVolksmusik, ab 20 Uhr Tanz",s:"Heute Abend können Sie in diesem Restaurant tanzen.",correct:true},
+  {loc:"An der Haltestelle",sign:"In der Neujahrsnacht\nBusverkehr bis 23.00 Uhr\nund von 1.00 Uhr bis 5.00 Uhr\nalle 30 Minuten",s:"Von 23 Uhr bis 1 Uhr fährt kein Bus.",correct:true}
+ ]},
+schreiben:{
+ teil1:{
+  scenario:"Ihre Freundin, Eva Kadavy, macht mit ihrem Mann und ihren beiden Söhnen (8 und 11 Jahre alt) Urlaub in Seeheim. Im Reisebüro bucht sie für den nächsten Sonntag eine Busfahrt um den Bodensee. Frau Kadavy hat keine Kreditkarte.\n\nIn dem Formular fehlen fünf Informationen. Helfen Sie Ihrer Freundin und schreiben Sie die fünf fehlenden Informationen in das Formular.",
+  formTitle:"Anmeldung – Busfahrt Bodensee",
+  fields:[
+   {label:"Familienname, Vorname",given:"Kadavy, Eva"},
+   {label:"Anzahl der Personen",answers:["4","vier"]},
+   {label:"Davon Kinder",answers:["2","zwei"]},
+   {label:"Urlaubsadresse",given:"Hotel Schönblick, Burgstraße 34"},
+   {label:"PLZ, Urlaubsort",given:"78014, ",answers:["seeheim"]},
+   {label:"Zahlungsweise (Bar / Kreditkarte)",answers:["bar"]},
+   {label:"Reisetermin",answers:["sonntag","nächsten sonntag","am sonntag"]}
+  ]},
+ teil2:{
+  task:"Sie möchten im August Dresden besuchen. Schreiben Sie an die Touristeninformation:",
+  points:["Warum schreiben Sie?","Bitten Sie: Informationen über Filme, Museen usw. (Kulturprogramm).","Fragen Sie: Hoteladressen?"],
+  muster:"Sehr geehrte Damen und Herren,\n\nich möchte im August Dresden besuchen. Können Sie mir bitte Informationen über das Kulturprogramm schicken? Ich interessiere mich für Filme und Museen. Können Sie mir auch einige Hoteladressen geben?\n\nVielen Dank!\nMit freundlichen Grüßen\nAli Khan"}},
+sprechen:{
+ teil2:[
+  {theme:"Einkaufen",wort:"Stadtplan",f:"Wo kann ich einen Stadtplan bekommen?",a:"An der Information im Bahnhof."},
+  {theme:"Einkaufen",wort:"Supermarkt",f:"Wann macht der Supermarkt auf?",a:"Um 8 Uhr morgens."},
+  {theme:"Einkaufen",wort:"Preis",f:"Was kostet das Brot?",a:"Es kostet 2 Euro 50."},
+  {theme:"Einkaufen",wort:"Geschäft",f:"Wo ist hier ein gutes Geschäft für Schuhe?",a:"In der Bahnhofstraße, neben der Apotheke."},
+  {theme:"Wochenende",wort:"Kino",f:"Gehst du am Wochenende ins Kino?",a:"Ja, am Samstagabend. Kommst du mit?"},
+  {theme:"Wochenende",wort:"Sport",f:"Machst du am Wochenende Sport?",a:"Ja, ich spiele am Sonntag Cricket."},
+  {theme:"Wochenende",wort:"Familie",f:"Was machst du am Wochenende mit deiner Familie?",a:"Wir essen zusammen und gehen in den Park."},
+  {theme:"Wochenende",wort:"kochen",f:"Kochst du am Wochenende?",a:"Ja, am Sonntag koche ich Biryani für meine Familie."}
+ ],
+ teil3:[
+  {wort:"Ein Glas Wasser",bitte:"Ein Glas Wasser, bitte!",reaktion:"Ja, natürlich. Bitte sehr."},
+  {wort:"Fenster",bitte:"Können Sie bitte das Fenster öffnen?",reaktion:"Ja, gern. Es ist wirklich warm hier."},
+  {wort:"Handy",bitte:"Kann ich bitte kurz Ihr Handy benutzen?",reaktion:"Ja, kein Problem. Hier, bitte."},
+  {wort:"Tür",bitte:"Machen Sie bitte die Tür zu!",reaktion:"Ja, sofort."},
+  {wort:"Kuli",bitte:"Haben Sie einen Kuli für mich?",reaktion:"Ja, natürlich. Hier ist ein Kuli."},
+  {wort:"langsam sprechen",bitte:"Können Sie bitte langsamer sprechen?",reaktion:"Ja, entschuldigung. Natürlich."}
+ ]}
+},
+{name:"Modelltest 2",
+hoeren:{
+ teil1:[
+  {q:"Wann fährt der Zug nach Berlin?",opts:["Um 14.15 Uhr.","Um 14.50 Uhr.","Um 15.40 Uhr."],correct:1,script:[[0,"Entschuldigung, wann fährt der nächste Zug nach Berlin?"],[1,"Moment … der nächste Zug fährt um 14 Uhr 50 von Gleis 7."],[0,"14 Uhr 50, Gleis 7. Vielen Dank!"]]},
+  {q:"Was möchte der Mann trinken?",opts:["Tee mit Milch.","Kaffee mit Zucker.","Tee mit Zucker."],correct:0,script:[[0,"Möchten Sie einen Kaffee?"],[1,"Nein danke, ich trinke keinen Kaffee. Haben Sie Tee?"],[0,"Ja, natürlich. Mit Zucker?"],[1,"Nein, ohne Zucker, aber mit etwas Milch, bitte."]]},
+  {q:"Wo wohnt Frau Yilmaz jetzt?",opts:["In Hamburg.","In München.","In Frankfurt."],correct:2,script:[[1,"Frau Yilmaz, Sie kommen doch aus Hamburg, oder?"],[0,"Ja, richtig. Aber ich habe drei Jahre in München gearbeitet."],[1,"Und jetzt?"],[0,"Seit Januar wohne ich in Frankfurt. Meine Firma ist dort."]]},
+  {q:"Wie viel kostet das Zimmer pro Nacht?",opts:["45 Euro.","54 Euro.","65 Euro."],correct:1,script:[[1,"Guten Tag, ich möchte ein Einzelzimmer für eine Nacht."],[0,"Ein Einzelzimmer kostet 54 Euro pro Nacht, mit Frühstück."],[1,"54 Euro? Gut, das nehme ich."]]},
+  {q:"Wann hat die Arztpraxis geöffnet?",opts:["Am Nachmittag.","Nur am Vormittag.","Am Abend."],correct:1,script:[[0,"Praxis Doktor Weber, guten Tag."],[1,"Guten Tag, ich möchte einen Termin. Geht es heute Nachmittag?"],[0,"Nein, tut mir leid. Am Freitag haben wir nur am Vormittag geöffnet, von 8 bis 12 Uhr."],[1,"Gut, dann komme ich morgen Vormittag."]]},
+  {q:"Was kauft die Frau?",opts:["Zwei Kilo Äpfel.","Ein Kilo Tomaten.","Zwei Kilo Kartoffeln."],correct:0,script:[[1,"Guten Tag, was darf es sein?"],[0,"Ich hätte gern Äpfel. Was kosten sie?"],[1,"Ein Kilo kostet 2 Euro 30."],[0,"Dann nehme ich zwei Kilo, bitte."],[1,"Gern. Sonst noch etwas? Die Tomaten sind heute im Angebot."],[0,"Nein danke, das ist alles."]]}
+ ],
+ teil2:[
+  {s:"Die Passagiere nach Istanbul sollen zum Ausgang B12 gehen.",correct:true,script:[[0,"Achtung bitte. Passagiere des Fluges TK 1617 nach Istanbul werden gebeten, sofort zum Ausgang B12 zu kommen. Der Flug ist zum Einsteigen bereit."]]},
+  {s:"Die Kunden bekommen heute Obst billiger.",correct:true,script:[[1,"Liebe Kundinnen und Kunden, besuchen Sie heute unsere Obstabteilung im Erdgeschoss. Alle Äpfel, Orangen und Bananen heute 30 Prozent billiger. Wir wünschen Ihnen einen schönen Einkauf."]]},
+  {s:"Die Fahrgäste sollen in Köln in den Bus steigen.",correct:false,script:[[0,"Liebe Fahrgäste, wegen Bauarbeiten endet dieser Zug heute in Düsseldorf. Bitte steigen Sie dort in die Busse zum Kölner Hauptbahnhof um. Wir bitten um Entschuldigung."]]},
+  {s:"Das Kind wartet an der Information.",correct:true,script:[[0,"Achtung, eine Durchsage: Die kleine Sara aus Lahore sucht ihre Eltern. Sie wartet an der Information im ersten Stock. Die Eltern werden gebeten, ihre Tochter dort abzuholen."]]}
+ ],
+ teil3:[
+  {q:"Wann soll Herr Demir anrufen?",opts:["Heute Abend.","Morgen früh.","Am Mittwoch."],correct:1,script:[[0,"Guten Tag, Herr Demir, hier Praxis Doktor Klein. Ihre Ergebnisse sind da. Bitte rufen Sie uns morgen früh zwischen 8 und 10 Uhr an. Danke und auf Wiederhören."]]},
+  {q:"Wo treffen sich die Freundinnen?",opts:["Im Café.","Vor dem Kino.","An der Bushaltestelle."],correct:1,script:[[0,"Hallo Mina, hier ist Julia. Also, der Film beginnt um 20 Uhr. Wir treffen uns um Viertel vor acht direkt vor dem Kino, okay? Bis später!"]]},
+  {q:"Welche Nummer hat der Bus zum Flughafen?",opts:["Bus 27.","Bus 72.","Bus 17."],correct:1,script:[[1,"Guten Tag, hier ist die Verkehrsinformation. Der Bus zum Flughafen fährt alle 20 Minuten vom Hauptbahnhof. Es ist die Linie 72. Ich wiederhole: Linie 72."]]},
+  {q:"Was soll Tom mitbringen?",opts:["Getränke.","Einen Kuchen.","Brot."],correct:0,script:[[0,"Hallo Tom, hier ist Anna. Du kommst doch morgen zur Party? Essen haben wir genug, aber kannst du bitte Getränke mitbringen? Cola und Saft vielleicht. Danke, bis morgen!"]]},
+  {q:"Wann ist das Geschäft am Samstag geöffnet?",opts:["Bis 16 Uhr.","Bis 18 Uhr.","Bis 20 Uhr."],correct:0,script:[[1,"Willkommen bei Möbel Schmidt. Unsere Öffnungszeiten: Montag bis Freitag von 9 bis 20 Uhr, samstags von 9 bis 16 Uhr. Sonntags ist unser Geschäft geschlossen."]]}
+ ]},
+lesen:{
+ teil1:[
+  {text:"Liebe Ayesha,\nendlich bin ich in Deutschland! Die Stadt Bonn ist sehr schön. Ich wohne bei einer netten Familie. Mein Sprachkurs beginnt am Montag um 9 Uhr. Der Kurs dauert acht Wochen. Am Nachmittag habe ich frei, dann mache ich Hausaufgaben oder gehe in die Stadt.\nBesuch mich doch mal!\nDeine Fatima",
+   items:[{s:"Fatima wohnt in einem Hotel.",correct:false},{s:"Der Sprachkurs dauert zwei Monate.",correct:true}]},
+  {text:"Lieber Omar,\nwir machen am Samstag einen Ausflug an den See. Wir fahren um 9 Uhr mit dem Fahrrad los, denn der Bus fährt am Wochenende nicht. Bring bitte etwas zu essen mit – Getränke habe ich schon. Das Wetter soll gut werden, also vergiss deine Badehose nicht! Wir kommen am Abend gegen 19 Uhr zurück.\nViele Grüße\nDaniel",
+   items:[{s:"Omar und Daniel fahren mit dem Bus an den See.",correct:false},{s:"Omar soll Essen mitbringen.",correct:true},{s:"Der Ausflug dauert den ganzen Tag.",correct:true}]}
+ ],
+ teil2:[
+  {sit:"Sie möchten am Sonntag Fußball spielen.",a:{url:"www.sportpark-mitte.de",txt:"Sportpark Mitte\nFußballplätze mieten – auch am Wochenende\nOnline-Reservierung · Preise"},b:{url:"www.fussball-fanshop.de",txt:"Fußball-Fanshop\nTrikots, Bälle, Schuhe\nGünstige Preise – schnelle Lieferung"},correct:0},
+  {sit:"Sie suchen eine Wohnung in Hamburg.",a:{url:"www.hamburg-hotels.de",txt:"Hotels in Hamburg\nZimmer ab 49 Euro\nJetzt buchen!"},b:{url:"www.wohnung-frei.de",txt:"Wohnungen mieten in ganz Deutschland\n1-, 2- und 3-Zimmer-Wohnungen\nSuche: Stadt eingeben"},correct:1},
+  {sit:"Sie möchten am Abend günstig essen gehen.",a:{url:"www.ristorante-roma.de",txt:"Ristorante Roma\nAb 18 Uhr: Pizza und Pasta nur 6,50 Euro\nTäglich geöffnet bis 23 Uhr"},b:{url:"www.kochschule-berlin.de",txt:"Kochschule Berlin\nItalienisch kochen lernen\nKurse am Wochenende, 89 Euro"},correct:0},
+  {sit:"Ihr Computer ist kaputt. Sie brauchen schnell Hilfe.",a:{url:"www.computer-kaufhaus.de",txt:"Computer-Kaufhaus\nNeue Laptops und PCs\nGroße Auswahl, kleine Preise"},b:{url:"www.pc-doktor24.de",txt:"PC-Doktor 24\nComputer-Reparatur bei Ihnen zu Hause\nSchnell – auch am Wochenende"},correct:1},
+  {sit:"Sie möchten Deutsch lernen, haben aber nur am Abend Zeit.",a:{url:"www.sprachschule-aktiv.de",txt:"Sprachschule Aktiv\nDeutschkurse: Montag bis Freitag 9–12 Uhr\nIntensivkurse am Vormittag"},b:{url:"www.abendakademie.de",txt:"Abendakademie\nDeutsch für Anfänger\nKurse: dienstags und donnerstags 18.30–20.30 Uhr"},correct:1}
+ ],
+ teil3:[
+  {loc:"Im Schwimmbad",sign:"Schwimmbad heute\nwegen Reparatur geschlossen.\nWir öffnen wieder am Freitag.",s:"Sie können heute hier schwimmen.",correct:false},
+  {loc:"An der Bibliothek",sign:"Stadtbibliothek\nMo–Fr 10–19 Uhr, Sa 10–14 Uhr\nBücher zurückgeben: Automat am Eingang, rund um die Uhr",s:"Sie können Bücher auch nachts zurückgeben.",correct:true},
+  {loc:"Im Parkhaus",sign:"Parkhaus Zentrum\n1 Stunde: 2 Euro\nSamstag und Sonntag: 1 Euro pro Stunde",s:"Am Wochenende ist das Parken billiger.",correct:true},
+  {loc:"An der Schule",sign:"Elternabend Klasse 4b:\nnicht am Dienstag,\nsondern am Donnerstag um 19 Uhr,\nRaum 12",s:"Der Elternabend ist am Dienstag.",correct:false},
+  {loc:"Im Zug",sign:"Ruhebereich\nBitte keine Telefongespräche.\nHandys bitte leise stellen.",s:"Sie dürfen hier nicht telefonieren.",correct:true}
+ ]},
+schreiben:{
+ teil1:{
+  scenario:"Ihr Freund, Hassan Raza, möchte einen Deutschkurs an der Sprachschule „Lingua“ in Köln machen. Er ist am 14.03.1998 in Karachi geboren und wohnt jetzt in der Hauptstraße 25 in 50667 Köln. Er möchte den Abendkurs A1 machen und mit Karte bezahlen. Seine Handynummer ist 0176 5566778.\n\nIn dem Formular fehlen fünf Informationen. Helfen Sie Ihrem Freund und schreiben Sie die fünf fehlenden Informationen in das Formular.",
+  formTitle:"Anmeldung – Sprachschule Lingua, Köln",
+  fields:[
+   {label:"Familienname, Vorname",given:"Raza, Hassan"},
+   {label:"Geburtsdatum",answers:["14.03.1998","14.3.1998","14. märz 1998"]},
+   {label:"Geburtsort",answers:["karachi"]},
+   {label:"Straße, Hausnummer",given:"Hauptstraße 25"},
+   {label:"PLZ, Wohnort",answers:["50667 köln","50667, köln","köln"]},
+   {label:"Kurs (Vormittag / Abend)",answers:["abend","abendkurs","abendkurs a1"]},
+   {label:"Zahlungsweise (Bar / Karte)",answers:["karte","mit karte"]}
+  ]},
+ teil2:{
+  task:"Sie waren krank und konnten zwei Tage nicht zum Deutschkurs kommen. Schreiben Sie an Ihre Lehrerin, Frau Müller:",
+  points:["Warum schreiben Sie?","Entschuldigen Sie sich.","Fragen Sie: Hausaufgaben?"],
+  muster:"Liebe Frau Müller,\n\nich war zwei Tage krank und konnte nicht zum Deutschkurs kommen. Entschuldigen Sie bitte. Jetzt geht es mir wieder gut. Können Sie mir bitte sagen, welche Hausaufgaben ich machen soll?\n\nVielen Dank!\nMit freundlichen Grüßen\nSara Ahmed"}},
+sprechen:{
+ teil2:[
+  {theme:"Essen und Trinken",wort:"Frühstück",f:"Was isst du zum Frühstück?",a:"Ich esse Brot mit Ei und trinke Tee."},
+  {theme:"Essen und Trinken",wort:"Lieblingsessen",f:"Was ist dein Lieblingsessen?",a:"Mein Lieblingsessen ist Biryani."},
+  {theme:"Essen und Trinken",wort:"Restaurant",f:"Gehst du oft ins Restaurant?",a:"Nein, nur am Wochenende mit meiner Familie."},
+  {theme:"Essen und Trinken",wort:"Obst",f:"Welches Obst isst du gern?",a:"Ich esse gern Mangos und Äpfel."},
+  {theme:"Arbeit",wort:"Beruf",f:"Was sind Sie von Beruf?",a:"Ich bin Ingenieur. Und Sie?"},
+  {theme:"Arbeit",wort:"Arbeitszeit",f:"Wann beginnt Ihre Arbeit?",a:"Meine Arbeit beginnt um 9 Uhr."},
+  {theme:"Arbeit",wort:"Kollegen",f:"Haben Sie nette Kollegen?",a:"Ja, meine Kollegen sind sehr nett."},
+  {theme:"Arbeit",wort:"Computer",f:"Arbeiten Sie mit dem Computer?",a:"Ja, ich arbeite jeden Tag am Computer."}
+ ],
+ teil3:[
+  {wort:"Licht",bitte:"Machen Sie bitte das Licht an!",reaktion:"Ja, natürlich, sofort."},
+  {wort:"Buch",bitte:"Können Sie mir bitte das Buch geben?",reaktion:"Ja, gern. Hier, bitte."},
+  {wort:"Foto",bitte:"Können Sie bitte ein Foto von uns machen?",reaktion:"Ja, kein Problem. Bitte lächeln!"},
+  {wort:"Adresse",bitte:"Schreiben Sie mir bitte Ihre Adresse auf!",reaktion:"Ja, einen Moment. Hier ist meine Adresse."},
+  {wort:"Tasche",bitte:"Können Sie bitte meine Tasche tragen? Sie ist so schwer.",reaktion:"Ja, natürlich helfe ich Ihnen."},
+  {wort:"wiederholen",bitte:"Können Sie das bitte wiederholen?",reaktion:"Ja, gern. Ich sage es noch einmal."}
+ ]}
+},
+/*EXAM2-END*/
+{name:"Modelltest 3",
+hoeren:{
+ teil1:[
+  {q:"Wo ist die Apotheke?",opts:["Neben der Bank.","Am Marktplatz.","Im Bahnhof."],correct:1,script:[[1,"Entschuldigung, gibt es hier eine Apotheke?"],[0,"Ja, am Marktplatz. Gehen Sie geradeaus und dann links. Die Apotheke ist direkt neben dem Café."],[1,"Am Marktplatz, danke schön!"]]},
+  {q:"Wie ist das Wetter morgen?",opts:["Es regnet.","Es ist sonnig.","Es schneit."],correct:0,script:[[0,"Und nun das Wetter für morgen: Am Vormittag ist es noch freundlich, aber am Nachmittag regnet es im ganzen Land. Die Temperaturen liegen bei 12 Grad."]]},
+  {q:"Wann beginnt der Film?",opts:["Um 19.30 Uhr.","Um 20.15 Uhr.","Um 21.00 Uhr."],correct:1,script:[[0,"Kino Capitol, guten Tag."],[1,"Guten Tag. Wann beginnt heute der neue Film?"],[0,"Um Viertel nach acht, also 20 Uhr 15."],[1,"Und was kostet die Karte?"],[0,"9 Euro, für Studenten 6 Euro."]]},
+  {q:"Was macht Herr Braun am Samstag?",opts:["Er arbeitet.","Er besucht Freunde.","Er bleibt zu Hause."],correct:2,script:[[0,"Herr Braun, was machen Sie am Samstag? Kommen Sie mit ins Konzert?"],[1,"Nein, leider nicht. Ich bin sehr müde, ich bleibe zu Hause und lese ein Buch."],[0,"Schade! Na, dann gute Erholung."]]},
+  {q:"Wie fährt die Frau zur Arbeit?",opts:["Mit dem Auto.","Mit der U-Bahn.","Mit dem Fahrrad."],correct:2,script:[[1,"Fahren Sie mit dem Auto zur Arbeit, Frau Lange?"],[0,"Nein, das Parken ist zu teuer. Früher bin ich mit der U-Bahn gefahren, aber jetzt fahre ich mit dem Fahrrad. Das ist gesund!"],[1,"Da haben Sie recht."]]},
+  {q:"Was kostet das Buch?",opts:["12 Euro.","20 Euro.","22 Euro."],correct:0,script:[[1,"Guten Tag, ich suche das Buch ‚Deutsch für Anfänger‘."],[0,"Das haben wir. Es kostet 12 Euro."],[1,"Nur 12 Euro? Das ist günstig. Ich nehme es."]]}
+ ],
+ teil2:[
+  {s:"Die Fahrgäste sollen am Gleis 9 in den Zug einsteigen.",correct:false,script:[[0,"Achtung am Gleis 9. Der ICE 571 nach Stuttgart fährt heute von Gleis 14 ab. Ich wiederhole: Der Zug nach Stuttgart fährt heute von Gleis 14."]]},
+  {s:"Die Schule bleibt am Montag geschlossen.",correct:true,script:[[1,"Liebe Eltern, eine wichtige Information: Wegen des Sturms bleibt die Schule am Montag geschlossen. Der Unterricht beginnt wieder am Dienstag um 8 Uhr."]]},
+  {s:"Der Kunde mit dem blauen Auto soll zum Parkplatz gehen.",correct:true,script:[[0,"Achtung, eine Durchsage: Der Besitzer des blauen Autos mit dem Kennzeichen K – AB 1234 wird gebeten, sofort zum Parkplatz zu kommen. Ihr Auto steht im Weg."]]},
+  {s:"Die Bibliothek schließt in einer Stunde.",correct:false,script:[[1,"Liebe Besucherinnen und Besucher, die Bibliothek schließt in 15 Minuten. Bitte bringen Sie Ihre Bücher jetzt zur Ausleihe. Wir öffnen morgen wieder um 10 Uhr."]]}
+ ],
+ teil3:[
+  {q:"Wann kommt Lisa nach Hause?",opts:["Um 17 Uhr.","Um 18 Uhr.","Um 19 Uhr."],correct:2,script:[[0,"Hallo Mama, ich bin's, Lisa. Ich muss heute länger arbeiten. Ich komme erst um 19 Uhr nach Hause. Bitte wartet mit dem Essen auf mich. Bis später!"]]},
+  {q:"Welches Gleis?",opts:["Gleis 3.","Gleis 13.","Gleis 30."],correct:1,script:[[1,"Information zu Ihrer Reise nach Hannover: Der Zug fährt heute von Gleis 13 ab. Ich wiederhole: Gleis 13."]]},
+  {q:"Was soll Frau Klein kaufen?",opts:["Milch und Brot.","Milch und Eier.","Brot und Eier."],correct:1,script:[[1,"Hallo Schatz, hier ist Peter. Kannst du auf dem Heimweg noch einkaufen? Wir brauchen Milch und Eier. Brot habe ich schon gekauft. Danke dir, bis heute Abend!"]]},
+  {q:"Wann hat Doktor Schulz Zeit?",opts:["Am Donnerstag um 9 Uhr.","Am Dienstag um 9 Uhr.","Am Donnerstag um 10 Uhr."],correct:0,script:[[0,"Guten Tag, hier ist die Praxis Doktor Schulz. Ihr Termin am Dienstag geht leider nicht. Können Sie am Donnerstag um 9 Uhr kommen? Bitte rufen Sie uns zurück."]]},
+  {q:"Wo wartet Herr Ali?",opts:["Vor dem Hotel.","Im Restaurant.","Am Taxistand."],correct:0,script:[[1,"Guten Tag, hier spricht Ali. Ich bin schon da. Ich warte vor dem Hotel am Eingang. Das Restaurant ist ja noch geschlossen. Bis gleich!"]]}
+ ]},
+lesen:{
+ teil1:[
+  {text:"Lieber Bilal,\nvielen Dank für deine Einladung zum Essen am Freitag. Ich komme sehr gern! Aber ich habe ein Problem: Mein Auto ist kaputt. Kannst du mich vielleicht um 19 Uhr von der Arbeit abholen? Ich arbeite bis 18.45 Uhr im Büro in der Gartenstraße.\nViele Grüße\nStefan",
+   items:[{s:"Stefan kommt am Freitag zum Essen.",correct:true},{s:"Stefan fährt mit dem Auto zu Bilal.",correct:false}]},
+  {text:"Liebe Maria,\nherzlichen Glückwunsch zum neuen Job! Wann fängst du an? Ich möchte mit dir feiern. Hast du am Donnerstagabend Zeit? Es gibt ein neues Café am Stadtpark, das ist sehr schön. Dort gibt es auch Kuchen und Eis. Ich lade dich ein!\nRuf mich an oder schreib mir eine SMS.\nDeine Hanna",
+   items:[{s:"Maria hat eine neue Arbeit.",correct:true},{s:"Hanna möchte am Donnerstag mit Maria feiern.",correct:true},{s:"Maria soll den Kuchen bezahlen.",correct:false}]}
+ ],
+ teil2:[
+  {sit:"Sie möchten am Wochenende einen Tanzkurs machen.",a:{url:"www.tanzschule-rhythmus.de",txt:"Tanzschule Rhythmus\nKurse für Anfänger: Samstag und Sonntag 14–16 Uhr\nJetzt anmelden!"},b:{url:"www.disco-nachtfieber.de",txt:"Disco Nachtfieber\nJeden Freitag und Samstag ab 22 Uhr\nEintritt 10 Euro"},correct:0},
+  {sit:"Sie suchen einen günstigen Flug nach Lahore.",a:{url:"www.reisebuero-orient.de",txt:"Reisebüro Orient\nGruppenreisen nach Dubai und Istanbul\nmit Hotel und Programm"},b:{url:"www.billigflug24.de",txt:"Billigflug24\nGünstige Flüge weltweit vergleichen\nPakistan, Indien, Türkei ab 399 Euro"},correct:1},
+  {sit:"Ihre Waschmaschine ist kaputt. Sie möchten eine neue kaufen.",a:{url:"www.elektro-grossmann.de",txt:"Elektro Großmann\nWaschmaschinen, Kühlschränke, Herde\nGroße Auswahl – Lieferung gratis"},b:{url:"www.waschsalon-blitz.de",txt:"Waschsalon Blitz\nWaschen und Trocknen ab 4 Euro\nTäglich 6–22 Uhr geöffnet"},correct:0},
+  {sit:"Sie möchten am Sonntag mit Ihren Kindern etwas machen.",a:{url:"www.buero-fix.de",txt:"Büro Fix\nDrucken, Kopieren, Scannen\nMo–Fr 8–18 Uhr"},b:{url:"www.zoo-stadtgarten.de",txt:"Zoo Stadtgarten\nTäglich 9–18 Uhr geöffnet\nKinder bis 6 Jahre gratis · Familienticket 25 Euro"},correct:1},
+  {sit:"Sie möchten Ihr altes Fahrrad verkaufen.",a:{url:"www.kleinanzeigen-portal.de",txt:"Kleinanzeigen-Portal\nVerkaufen Sie hier: Möbel, Fahrräder, Elektronik\nAnzeige kostenlos aufgeben"},b:{url:"www.fahrrad-mueller.de",txt:"Fahrrad Müller\nNeue Fahrräder und E-Bikes\nBeratung und Werkstatt"},correct:0}
+ ],
+ teil3:[
+  {loc:"Am Aufzug",sign:"Aufzug außer Betrieb.\nBitte benutzen Sie die Treppe.",s:"Der Aufzug funktioniert nicht.",correct:true},
+  {loc:"Im Restaurant",sign:"Mittagsmenü\nMontag bis Freitag 12–15 Uhr\nnur 7,90 Euro inkl. Getränk",s:"Das Mittagsmenü gibt es auch am Sonntag.",correct:false},
+  {loc:"An der Bushaltestelle",sign:"Linie 5: Wegen Bauarbeiten\nfährt der Bus diese Woche\nab Rathaus statt ab Bahnhof.",s:"Der Bus der Linie 5 fährt diese Woche ab Rathaus.",correct:true},
+  {loc:"Im Kaufhaus",sign:"Sommerschlussverkauf!\nAlle T-Shirts und Hosen\n50 % reduziert – nur noch diese Woche",s:"Die T-Shirts kosten diese Woche die Hälfte.",correct:true},
+  {loc:"An der Arztpraxis",sign:"Praxis Dr. Hofmann\nvom 1.8. bis 21.8. geschlossen (Urlaub)\nVertretung: Dr. Becker, Marktstr. 7",s:"Dr. Hofmann arbeitet im August die ganze Zeit.",correct:false}
+ ]},
+schreiben:{
+ teil1:{
+  scenario:"Ihre Kollegin, Amna Tariq, möchte ein Zimmer im Hotel „Stern“ in München reservieren. Sie kommt am 12. Oktober und bleibt drei Nächte (bis 15. Oktober). Sie reist allein und möchte ein Einzelzimmer mit Frühstück. Sie bezahlt mit Kreditkarte. Ihre E-Mail-Adresse ist amna.tariq@mail.com.\n\nIn dem Formular fehlen fünf Informationen. Helfen Sie Ihrer Kollegin und schreiben Sie die fünf fehlenden Informationen in das Formular.",
+  formTitle:"Reservierung – Hotel Stern, München",
+  fields:[
+   {label:"Familienname, Vorname",given:"Tariq, Amna"},
+   {label:"Anreise (Datum)",answers:["12. oktober","12.10","12.10.","am 12. oktober"]},
+   {label:"Anzahl der Nächte",answers:["3","drei"]},
+   {label:"Zimmer (Einzelzimmer / Doppelzimmer)",answers:["einzelzimmer","einzel"]},
+   {label:"Mit Frühstück? (ja / nein)",answers:["ja","mit frühstück"]},
+   {label:"Zahlungsweise (Bar / Kreditkarte)",answers:["kreditkarte","mit kreditkarte","karte"]},
+   {label:"E-Mail",given:"amna.tariq@mail.com"}
+  ]},
+ teil2:{
+  task:"Sie haben am Samstag Geburtstag und machen eine Party. Schreiben Sie eine Einladung an Ihren Freund Felix:",
+  points:["Warum schreiben Sie?","Wann beginnt die Party? Wo?","Bitten Sie: Felix soll Musik mitbringen."],
+  muster:"Lieber Felix,\n\nam Samstag habe ich Geburtstag und ich mache eine Party. Ich lade dich herzlich ein! Die Party beginnt um 19 Uhr bei mir zu Hause in der Schillerstraße 10. Kannst du bitte Musik mitbringen?\n\nIch freue mich auf dich!\nViele Grüße\nUsman"}},
+sprechen:{
+ teil2:[
+  {theme:"Familie",wort:"Geschwister",f:"Hast du Geschwister?",a:"Ja, ich habe zwei Brüder und eine Schwester."},
+  {theme:"Familie",wort:"Eltern",f:"Wo wohnen deine Eltern?",a:"Meine Eltern wohnen in Islamabad."},
+  {theme:"Familie",wort:"Kinder",f:"Haben Sie Kinder?",a:"Ja, ich habe eine Tochter. Sie ist fünf Jahre alt."},
+  {theme:"Familie",wort:"Wochenende",f:"Was macht deine Familie am Wochenende?",a:"Wir besuchen oft unsere Großeltern."},
+  {theme:"Reisen",wort:"Urlaub",f:"Wohin fährst du im Urlaub?",a:"Ich fahre in die Berge, nach Murree."},
+  {theme:"Reisen",wort:"Zug",f:"Fährst du gern mit dem Zug?",a:"Ja, sehr gern. Das ist bequem."},
+  {theme:"Reisen",wort:"Hotel",f:"Schläfst du im Urlaub im Hotel?",a:"Nein, ich schlafe bei meiner Familie."},
+  {theme:"Reisen",wort:"Koffer",f:"Was packst du in deinen Koffer?",a:"Kleidung, Schuhe und mein Handy-Ladegerät."}
+ ],
+ teil3:[
+  {wort:"Stift",bitte:"Geben Sie mir bitte einen Stift!",reaktion:"Ja, hier bitte."},
+  {wort:"Wasser",bitte:"Kann ich bitte ein Glas Wasser haben?",reaktion:"Ja, natürlich. Einen Moment."},
+  {wort:"Platz",bitte:"Ist hier noch frei? Kann ich mich setzen?",reaktion:"Ja, bitte. Setzen Sie sich."},
+  {wort:"Rechnung",bitte:"Die Rechnung, bitte!",reaktion:"Ja, sofort. Das macht 18 Euro."},
+  {wort:"helfen",bitte:"Können Sie mir bitte helfen?",reaktion:"Ja, gern. Was kann ich für Sie tun?"},
+  {wort:"Uhrzeit",bitte:"Sagen Sie mir bitte die Uhrzeit!",reaktion:"Ja, es ist jetzt halb drei."}
+ ]}
+}
+/*EXAM3-END*/
+];
+/*DATA-END*/
+/* ===================== ENGINE ===================== */
+const app=document.getElementById('app');
+const timerEl=document.getElementById('timer');
+let S; try{S=JSON.parse(localStorage.getItem('ga1sim')||'{}')}catch(e){S={}}
+function save(){try{localStorage.setItem('ga1sim',JSON.stringify(S))}catch(e){}}
+function ex(i){S[i]=S[i]||{};return S[i]}
+let curEx=0;
+
+/* ---------- Timer ---------- */
+let tInt=null,tLeft=0;
+function startTimer(min){stopTimer();tLeft=min*60;timerEl.style.display='block';tick();tInt=setInterval(()=>{tLeft--;tick();if(tLeft<=0){stopTimer();alert('Die Zeit ist abgelaufen! Bitte geben Sie jetzt ab.');}},1000);}
+function tick(){const m=Math.floor(tLeft/60),s=tLeft%60;timerEl.textContent=m+':'+String(s).padStart(2,'0');timerEl.classList.toggle('warn',tLeft<=120);}
+function stopTimer(){if(tInt)clearInterval(tInt);tInt=null;timerEl.style.display='none';timerEl.classList.remove('warn');}
+
+/* ---------- TTS ---------- */
+let voices=[];
+function loadVoices(){voices=speechSynthesis.getVoices();}
+loadVoices(); if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=loadVoices;
+function deVoice(){return voices.find(v=>/de[-_]DE/i.test(v.lang))||voices.find(v=>/^de/i.test(v.lang))||null;}
+function playScript(script,times){
+ speechSynthesis.cancel();
+ const v=deVoice();
+ for(let r=0;r<times;r++){
+  script.forEach((line,idx)=>{
+   const u=new SpeechSynthesisUtterance(line[1]);
+   u.lang='de-DE'; if(v)u.voice=v;
+   u.rate=0.85; u.pitch=line[0]===0?1.25:0.8;
+   speechSynthesis.speak(u);
+  });
+  if(r<times-1){const p=new SpeechSynthesisUtterance('—');p.lang='de-DE';if(v)p.voice=v;p.volume=0;p.rate=.3;speechSynthesis.speak(p);}
+ }
+}
+function stopAudio(){speechSynthesis.cancel();}
+
+/* ---------- Helpers ---------- */
+const MODS=[
+ {key:'hoeren',name:'Hören',icon:'🎧',time:20,desc:'3 Teile · 15 Aufgaben · ca. 20 Min.'},
+ {key:'lesen',name:'Lesen',icon:'📖',time:25,desc:'3 Teile · 15 Aufgaben · 25 Min.'},
+ {key:'schreiben',name:'Schreiben',icon:'✍️',time:20,desc:'2 Teile · Formular + Mitteilung · 20 Min.'},
+ {key:'sprechen',name:'Sprechen',icon:'🗣️',time:15,desc:'3 Teile · Gruppenprüfung · ca. 15 Min.'}
+];
+function scaled(raw){return Math.round(raw*5/3*10)/10;}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function go(view,a,b){window.scrollTo(0,0);stopAudio();stopTimer();VIEWS[view](a,b);}
+
+/* ---------- Views ---------- */
+const VIEWS={};
+
+VIEWS.home=function(){
+ let prog='';
+ EXAMS.forEach((e,i)=>{
+  const st=ex(i);let chips='';
+  MODS.forEach(m=>{const d=st[m.key];chips+=d&&d.done?`<span class="badge">${m.name}: ${scaled(d.raw)}/25</span>`:`<span class="badge gray">${m.name}: –</span>`;});
+  prog+=`<div class="card module-card" onclick="go('examMenu',${i})">
+    <h2>📋 ${e.name}</h2><div class="pill-row">${chips}</div>
+    <button class="btn small">Öffnen →</button></div>`;
+ });
+ app.innerHTML=`
+ <div class="card" style="background:linear-gradient(135deg,var(--green-light),#fff)">
+  <h1>Goethe-Zertifikat A1 · Start Deutsch 1</h1>
+  <p class="lead">Kompletter Prüfungssimulator mit 3 Modelltests im offiziellen Format – Hören, Lesen, Schreiben und Sprechen. Modelltest 1 basiert auf dem offiziellen Modellsatz des Goethe-Instituts.</p>
+  <div class="pill-row">
+   <span class="tag">🎧 Hören: TTS-Audio, jeder Text 1× oder 2×</span>
+   <span class="tag">⏱️ Echte Prüfungszeiten</span>
+   <span class="tag">✅ Automatische Auswertung</span>
+   <span class="tag">📊 Punkte wie in der echten Prüfung (max. 100)</span>
+  </div>
+ </div>
+ ${prog}
+ <div class="card">
+  <h2>ℹ️ Prüfungsformat</h2>
+  <table class="info">
+   <tr><th>Modul</th><th>Teile</th><th>Aufgaben</th><th>Zeit</th><th>Punkte</th></tr>
+   <tr><td>Hören</td><td>3</td><td>15</td><td>ca. 20 Min.</td><td>25</td></tr>
+   <tr><td>Lesen</td><td>3</td><td>15</td><td>25 Min.</td><td>25</td></tr>
+   <tr><td>Schreiben</td><td>2</td><td>Formular + Text (ca. 30 Wörter)</td><td>20 Min.</td><td>25</td></tr>
+   <tr><td>Sprechen</td><td>3</td><td>Gruppenprüfung</td><td>ca. 15 Min.</td><td>25</td></tr>
+  </table>
+  <p style="margin-top:10px"><strong>Bestanden:</strong> mindestens 60 von 100 Punkten. Prädikate: sehr gut (90–100), gut (80–89,5), befriedigend (70–79,5), ausreichend (60–69,5).</p>
+ </div>
+ <div class="card">
+  <h2>🇵🇰 Prüfung in Pakistan</h2>
+  <table class="info">
+   <tr><th>Stadt</th><th>Prüfungszentrum</th></tr>
+   <tr><td>Karachi</td><td>Goethe-Institut Pakistan</td></tr>
+   <tr><td>Lahore</td><td>Annemarie-Schimmel-Haus, Scotch Corner, 155 St 3, Upper Mall Scheme</td></tr>
+   <tr><td>Islamabad</td><td>NUML, 4 Khayaban-e-Johar, H-9/4</td></tr>
+  </table>
+  <p style="margin-top:10px">Gebühr A1: ca. <strong>Rs. 11.000</strong> (interne Kandidaten; externe Kandidaten zahlen mehr). Prüfungstermine gibt es fast jeden Monat. Anmeldung und aktuelle Termine: <strong>goethe.de/pakistan</strong>. Das A1-Zertifikat braucht man u. a. für das Visum zur Familienzusammenführung und für viele Au-pair- und Ausbildungsprogramme in Deutschland.</p>
+ </div>`;
+};
+
+VIEWS.examMenu=function(i){
+ curEx=i;const e=EXAMS[i],st=ex(i);
+ let cards='';
+ MODS.forEach(m=>{
+  const d=st[m.key];
+  cards+=`<div class="card module-card" onclick="go('${m.key}',${i})">
+   <div class="mod-icon">${m.icon}</div><h2>${m.name}</h2>
+   <p style="color:var(--muted);font-size:.9rem">${m.desc}</p>
+   ${d&&d.done?`<div class="score-chip">✅ ${scaled(d.raw)} / 25</div>`:''}
+   <button class="btn small" style="margin-top:10px">${d&&d.done?'Wiederholen':'Starten'}</button>
+  </div>`;
+ });
+ const allDone=MODS.every(m=>st[m.key]&&st[m.key].done);
+ app.innerHTML=`
+ <div class="crumb" onclick="go('home')">← Übersicht</div>
+ <h1>📋 ${e.name}</h1>
+ <p class="lead">Empfohlene Reihenfolge wie in der echten Prüfung: Hören → Lesen → Schreiben → Sprechen.</p>
+ <div class="grid c2">${cards}</div>
+ <div class="navrow">
+  <button class="btn ${allDone?'':'sec'}" onclick="go('results',${i})">📊 Ergebnis ansehen</button>
+  <button class="btn ghost" onclick="if(confirm('Alle Antworten von ${e.name} löschen?')){delete S[${i}];save();go('examMenu',${i})}">Zurücksetzen</button>
+ </div>`;
+};
+
+/* ---------- Hören ---------- */
+VIEWS.hoeren=function(i){
+ curEx=i;const H=EXAMS[i].hoeren;const st=ex(i);st.hoeren=st.hoeren||{ans:{},done:false};
+ let n=0,html='';
+ const item=(idx,inner)=>`<div class="task-item" id="task_${idx}">${inner}</div>`;
+ const playbar=(part,idx,times)=>`<div class="playbar">▶️ <button class="btn small" onclick="playH('${part}',${idx},${times})">Audio abspielen</button> <button class="btn small ghost" onclick="stopAudio()">⏹ Stopp</button><span class="count">Sie hören den Text ${times===2?'zweimal':'einmal'}.</span></div>`;
+ H.teil1.forEach((t,k)=>{n++;
+  html+=item('t1_'+k,`<span class="qnum">${n}.</span> <strong>${esc(t.q)}</strong>${playbar('teil1',k,2)}
+   <div class="opts">${t.opts.map((o,oi)=>`<div class="opt" id="h_t1_${k}_${oi}" onclick="pickH('t1',${k},${oi},3)"><span class="letter">${'abc'[oi]}</span> ${esc(o)}</div>`).join('')}</div>`);
+ });
+ let t2='';H.teil2.forEach((t,k)=>{n++;
+  t2+=item('t2_'+k,`<span class="qnum">${n}.</span> <strong>${esc(t.s)}</strong>${playbar('teil2',k,1)}
+   <div class="rf"><div class="opt" id="h_t2_${k}_1" onclick="pickH('t2',${k},1,0)">Richtig</div><div class="opt" id="h_t2_${k}_0" onclick="pickH('t2',${k},0,0)">Falsch</div></div>`);
+ });
+ let t3='';H.teil3.forEach((t,k)=>{n++;
+  t3+=item('t3_'+k,`<span class="qnum">${n}.</span> <strong>${esc(t.q)}</strong>${playbar('teil3',k,2)}
+   <div class="opts">${t.opts.map((o,oi)=>`<div class="opt" id="h_t3_${k}_${oi}" onclick="pickH('t3',${k},${oi},3)"><span class="letter">${'abc'[oi]}</span> ${esc(o)}</div>`).join('')}</div>`);
+ });
+ app.innerHTML=`
+ <div class="crumb" onclick="go('examMenu',${i})">← ${EXAMS[i].name}</div>
+ <h1>🎧 Hören <span class="badge">ca. 20 Minuten</span></h1>
+ <p class="lead">Dieser Test hat drei Teile. Sie hören kurze Gespräche und Ansagen. Lesen Sie zuerst die Aufgabe, hören Sie dann den Text dazu. <em>Tipp: Für das Audio braucht Ihr Browser eine deutsche Stimme (Text-to-Speech).</em></p>
+ <div class="card"><h2>Teil 1 · Was ist richtig? Kreuzen Sie an: a, b oder c.</h2>${html}</div>
+ <div class="card"><h2>Teil 2 · Kreuzen Sie an: Richtig oder Falsch.</h2>${t2}</div>
+ <div class="card"><h2>Teil 3 · Was ist richtig? Kreuzen Sie an: a, b oder c.</h2>${t3}</div>
+ <div class="navrow"><button class="btn" onclick="scoreH(${i})">✅ Abgeben und auswerten</button></div>
+ <div id="hres"></div>`;
+ startTimer(20);
+ if(st.hoeren.done)scoreH(i,true);
+};
+window.playH=function(part,idx,times){playScript(EXAMS[curEx].hoeren[part==='teil1'?'teil1':part==='teil2'?'teil2':'teil3'][idx].script,times);};
+window.pickH=function(teil,k,v,nOpts){
+ const st=ex(curEx);st.hoeren=st.hoeren||{ans:{}};st.hoeren.ans[teil+'_'+k]=v;save();
+ if(teil==='t2'){[0,1].forEach(o=>document.getElementById(`h_t2_${k}_${o}`).classList.toggle('sel',o===v));}
+ else{for(let o=0;o<nOpts;o++)document.getElementById(`h_${teil}_${k}_${o}`).classList.toggle('sel',o===v);}
+};
+window.scoreH=function(i,silent){
+ stopAudio();const H=EXAMS[i].hoeren,st=ex(i);st.hoeren=st.hoeren||{ans:{}};
+ let raw=0;
+ H.teil1.forEach((t,k)=>{const a=st.hoeren.ans['t1_'+k];for(let o=0;o<3;o++){const el=document.getElementById(`h_t1_${k}_${o}`);el.classList.remove('correct','wrong');if(o===t.correct)el.classList.add('correct');else if(a===o)el.classList.add('wrong');}if(a===t.correct)raw++;});
+ H.teil2.forEach((t,k)=>{const a=st.hoeren.ans['t2_'+k],c=t.correct?1:0;[0,1].forEach(o=>{const el=document.getElementById(`h_t2_${k}_${o}`);el.classList.remove('correct','wrong');if(o===c)el.classList.add('correct');else if(a===o)el.classList.add('wrong');});if(a===c)raw++;});
+ H.teil3.forEach((t,k)=>{const a=st.hoeren.ans['t3_'+k];for(let o=0;o<3;o++){const el=document.getElementById(`h_t3_${k}_${o}`);el.classList.remove('correct','wrong');if(o===t.correct)el.classList.add('correct');else if(a===o)el.classList.add('wrong');}if(a===t.correct)raw++;});
+ st.hoeren.raw=raw;st.hoeren.done=true;save();stopTimer();
+ document.getElementById('hres').innerHTML=`<div class="card result-big"><div class="total">${raw} / 15</div><div class="pred">= ${scaled(raw)} von 25 Punkten</div><div class="navrow" style="justify-content:center"><button class="btn" onclick="go('lesen',${i})">Weiter: Lesen →</button><button class="btn sec" onclick="go('examMenu',${i})">Zur Übersicht</button></div></div>`;
+ if(!silent)document.getElementById('hres').scrollIntoView({behavior:'smooth'});
+};
+
+/* ---------- Lesen ---------- */
+VIEWS.lesen=function(i){
+ curEx=i;const L=EXAMS[i].lesen,st=ex(i);st.lesen=st.lesen||{ans:{},done:false};
+ let n=0,t1='';
+ L.teil1.forEach((blk,b)=>{
+  t1+=`<div class="readtext">${esc(blk.text)}</div>`;
+  blk.items.forEach((it,k)=>{n++;
+   t1+=`<div class="task-item"><span class="qnum">${n}.</span> ${esc(it.s)}
+    <div class="rf"><div class="opt" id="l_t1_${b}_${k}_1" onclick="pickL('t1_${b}_${k}',1)">Richtig</div><div class="opt" id="l_t1_${b}_${k}_0" onclick="pickL('t1_${b}_${k}',0)">Falsch</div></div></div>`;
+  });
+ });
+ let t2='';
+ L.teil2.forEach((t,k)=>{n++;
+  t2+=`<div class="task-item"><span class="qnum">${n}.</span> <strong>${esc(t.sit)}</strong> <em style="color:var(--muted)">Wo finden Sie Informationen?</em>
+   <div class="grid c2" style="margin-top:10px">
+    <div class="opt" id="l_t2_${k}_0" onclick="pickL('t2_${k}',0)" style="flex-direction:column;align-items:flex-start"><span class="letter">a</span><div class="website"><span class="url">${esc(t.a.url)}</span>\n${esc(t.a.txt)}</div></div>
+    <div class="opt" id="l_t2_${k}_1" onclick="pickL('t2_${k}',1)" style="flex-direction:column;align-items:flex-start"><span class="letter">b</span><div class="website"><span class="url">${esc(t.b.url)}</span>\n${esc(t.b.txt)}</div></div>
+   </div></div>`;
+ });
+ let t3='';
+ L.teil3.forEach((t,k)=>{n++;
+  t3+=`<div class="task-item"><div class="sign"><span class="loc">${esc(t.loc)}</span>${esc(t.sign)}</div>
+   <span class="qnum">${n}.</span> ${esc(t.s)}
+   <div class="rf"><div class="opt" id="l_t3_${k}_1" onclick="pickL('t3_${k}',1)">Richtig</div><div class="opt" id="l_t3_${k}_0" onclick="pickL('t3_${k}',0)">Falsch</div></div></div>`;
+ });
+ app.innerHTML=`
+ <div class="crumb" onclick="go('examMenu',${i})">← ${EXAMS[i].name}</div>
+ <h1>📖 Lesen <span class="badge">25 Minuten</span></h1>
+ <p class="lead">Dieser Test hat drei Teile. Sie lesen kurze Briefe, Anzeigen usw. Zu jedem Text gibt es Aufgaben. Wörterbücher sind nicht erlaubt.</p>
+ <div class="card"><h2>Teil 1 · Lesen Sie die Texte. Richtig oder Falsch?</h2>${t1}</div>
+ <div class="card"><h2>Teil 2 · Wo finden Sie Informationen? Kreuzen Sie an: a oder b.</h2>${t2}</div>
+ <div class="card"><h2>Teil 3 · Lesen Sie die Schilder. Richtig oder Falsch?</h2>${t3}</div>
+ <div class="navrow"><button class="btn" onclick="scoreL(${i})">✅ Abgeben und auswerten</button></div>
+ <div id="lres"></div>`;
+ startTimer(25);
+ if(st.lesen.done)scoreL(i,true);
+};
+window.pickL=function(key,v){
+ const st=ex(curEx);st.lesen=st.lesen||{ans:{}};st.lesen.ans[key]=v;save();
+ const nOpts=2;for(let o=0;o<nOpts;o++){const el=document.getElementById(`l_${key.split('_')[0]==='t2'?key:key}_${o}`)||document.getElementById(`l_${key}_${o}`);if(el)el.classList.toggle('sel',o===v);}
+};
+window.scoreL=function(i,silent){
+ const L=EXAMS[i].lesen,st=ex(i);st.lesen=st.lesen||{ans:{}};let raw=0;
+ const mark=(key,correct)=>{const a=st.lesen.ans[key];[0,1].forEach(o=>{const el=document.getElementById(`l_${key}_${o}`);if(!el)return;el.classList.remove('correct','wrong');if(o===correct)el.classList.add('correct');else if(a===o)el.classList.add('wrong');});return a===correct;};
+ L.teil1.forEach((blk,b)=>blk.items.forEach((it,k)=>{if(mark(`t1_${b}_${k}`,it.correct?1:0))raw++;}));
+ L.teil2.forEach((t,k)=>{if(mark(`t2_${k}`,t.correct))raw++;});
+ L.teil3.forEach((t,k)=>{if(mark(`t3_${k}`,t.correct?1:0))raw++;});
+ st.lesen.raw=raw;st.lesen.done=true;save();stopTimer();
+ document.getElementById('lres').innerHTML=`<div class="card result-big"><div class="total">${raw} / 15</div><div class="pred">= ${scaled(raw)} von 25 Punkten</div><div class="navrow" style="justify-content:center"><button class="btn" onclick="go('schreiben',${i})">Weiter: Schreiben →</button><button class="btn sec" onclick="go('examMenu',${i})">Zur Übersicht</button></div></div>`;
+ if(!silent)document.getElementById('lres').scrollIntoView({behavior:'smooth'});
+};
+
+/* ---------- Schreiben ---------- */
+VIEWS.schreiben=function(i){
+ curEx=i;const W=EXAMS[i].schreiben,st=ex(i);st.schreiben=st.schreiben||{t1:{},t2:'',crit:[null,null,null,null],done:false};
+ let rows='';
+ W.teil1.fields.forEach((f,k)=>{
+  if(f.given&&!f.answers){rows+=`<tr><td>${esc(f.label)}</td><td>${esc(f.given)}</td></tr>`;}
+  else{const pre=f.given?esc(f.given):'';rows+=`<tr><td>${esc(f.label)} ✏️</td><td>${pre}<input type="text" id="sw1_${k}" value="${esc(st.schreiben.t1[k]||'')}" oninput="ex(curEx).schreiben.t1[${k}]=this.value;save()" placeholder="…"><div class="feedback" id="sw1fb_${k}"></div></td></tr>`;}
+ });
+ const pts=W.teil2.points.map(p=>`<li>${esc(p)}</li>`).join('');
+ app.innerHTML=`
+ <div class="crumb" onclick="go('examMenu',${i})">← ${EXAMS[i].name}</div>
+ <h1>✍️ Schreiben <span class="badge">20 Minuten</span></h1>
+ <div class="card"><h2>Teil 1 · Formular (5 Punkte)</h2>
+  <p>${esc(W.teil1.scenario).replace(/\n/g,'<br>')}</p>
+  <h3>${esc(W.teil1.formTitle)}</h3>
+  <table class="formtable">${rows}</table>
+ </div>
+ <div class="card"><h2>Teil 2 · Kurze Mitteilung (10 Punkte)</h2>
+  <p><strong>${esc(W.teil2.task)}</strong></p><ul style="margin:8px 0 8px 22px">${pts}</ul>
+  <p style="color:var(--muted);font-size:.9rem">Schreiben Sie zu jedem Punkt ein bis zwei Sätze (circa 30 Wörter). Schreiben Sie auch eine Anrede und einen Gruß.</p>
+  <textarea id="sw2" oninput="ex(curEx).schreiben.t2=this.value;save();document.getElementById('wc').textContent=this.value.trim()?this.value.trim().split(/\\s+/).length:0">${esc(st.schreiben.t2||'')}</textarea>
+  <p style="text-align:right;color:var(--muted);font-size:.85rem"><span id="wc">${st.schreiben.t2?st.schreiben.t2.trim().split(/\s+/).length:0}</span> Wörter</p>
+ </div>
+ <div class="navrow"><button class="btn" onclick="scoreW(${i})">✅ Abgeben und auswerten</button></div>
+ <div id="wres"></div>`;
+ startTimer(20);
+ if(st.schreiben.done)scoreW(i,true);
+};
+function norm(s){return (s||'').toLowerCase().trim().replace(/[.,!]/g,'').replace(/\s+/g,' ');}
+window.scoreW=function(i,silent){
+ const W=EXAMS[i].schreiben,st=ex(i);let t1raw=0;
+ W.teil1.fields.forEach((f,k)=>{
+  if(!f.answers)return;
+  const valEl=document.getElementById('sw1_'+k);const val=norm(valEl?valEl.value:st.schreiben.t1[k]);
+  const ok=f.answers.some(a=>val===norm(a)||val.includes(norm(a)));
+  if(ok)t1raw++;
+  const fb=document.getElementById('sw1fb_'+k);
+  if(fb){fb.className='feedback '+(ok?'ok':'no');fb.textContent=ok?'✓ Richtig':'✗ Erwartet z. B.: '+f.answers[0];}
+ });
+ st.schreiben.t1raw=t1raw;st.schreiben.done=true;save();stopTimer();
+ const crit=st.schreiben.crit||[null,null,null,null];
+ const critRow=(idx,label,vals)=>`<div class="crit"><select onchange="ex(curEx).schreiben.crit[${idx}]=parseFloat(this.value);save();updW(${i})"><option value="">– Punkte wählen –</option>${vals.map(v=>`<option value="${v}" ${crit[idx]===v?'selected':''}>${v} Punkte</option>`).join('')}</select><span>${label}</span></div>`;
+ document.getElementById('wres').innerHTML=`
+ <div class="card"><h2>Auswertung Teil 1: ${t1raw} / 5 Punkte</h2></div>
+ <div class="card"><h2>Auswertung Teil 2 (Selbstbewertung, max. 10 Punkte)</h2>
+  <p class="lead">Vergleichen Sie Ihren Text mit der Musterlösung und bewerten Sie sich selbst – wie die echten Prüfer:</p>
+  <div class="muster"><strong>Musterlösung:</strong>\n\n${esc(W.teil2.muster)}</div>
+  <h3>Bewertungskriterien</h3>
+  ${critRow(0,'Inhaltspunkt 1 erfüllt? (voll = 3 / teilweise = 1,5 / nicht = 0)',[3,1.5,0])}
+  ${critRow(1,'Inhaltspunkt 2 erfüllt?',[3,1.5,0])}
+  ${critRow(2,'Inhaltspunkt 3 erfüllt?',[3,1.5,0])}
+  ${critRow(3,'Anrede und Gruß vorhanden? (1 / 0,5 / 0)',[1,0.5,0])}
+  <div id="wtotal" style="margin-top:14px"></div>
+ </div>`;
+ updW(i);
+ if(!silent)document.getElementById('wres').scrollIntoView({behavior:'smooth'});
+};
+window.updW=function(i){
+ const st=ex(i);const crit=st.schreiben.crit||[];
+ const t2=crit.reduce((s,v)=>s+(v||0),0);
+ const raw=(st.schreiben.t1raw||0)+t2;st.schreiben.raw=raw;save();
+ document.getElementById('wtotal').innerHTML=`<div class="result-big"><div class="total">${raw} / 15</div><div class="pred">= ${scaled(raw)} von 25 Punkten</div><div class="navrow" style="justify-content:center"><button class="btn" onclick="go('sprechen',${i})">Weiter: Sprechen →</button><button class="btn sec" onclick="go('examMenu',${i})">Zur Übersicht</button></div></div>`;
+};
+
+/* ---------- Sprechen ---------- */
+VIEWS.sprechen=function(i){
+ curEx=i;const P=EXAMS[i].sprechen,st=ex(i);st.sprechen=st.sprechen||{s1:null,s2:null,s3:null,done:false};
+ const card=(idx,part)=>{const c=P[part][idx];
+  return `<div class="speakcard" id="sc_${part}_${idx}" onclick="flipCard('${part}',${idx})">
+   ${c.theme?`<span class="theme">Thema: ${esc(c.theme)}</span>`:''}
+   <div>${esc(c.wort)}</div>
+   <div class="answer" id="sca_${part}_${idx}" style="display:none">
+    ${part==='teil2'?`<strong>Frage:</strong> ${esc(c.f)}<br><strong>Antwort:</strong> ${esc(c.a)}`:`<strong>Bitte:</strong> ${esc(c.bitte)}<br><strong>Reaktion:</strong> ${esc(c.reaktion)}`}
+    <br><button class="btn small" style="margin-top:8px" onclick="event.stopPropagation();speakCard('${part}',${idx})">🔊 Anhören</button>
+   </div>
+   <span style="font-size:.75rem;color:var(--muted);margin-top:8px">Klicken = Beispiel zeigen</span>
+  </div>`;};
+ const sel=(key,max,label)=>`<div class="crit"><select onchange="ex(curEx).sprechen.${key}=parseFloat(this.value);save();updS(${i})"><option value="">– Punkte –</option>${Array.from({length:max*2+1},(_,k)=>k/2).reverse().map(v=>`<option value="${v}" ${st.sprechen[key]===v?'selected':''}>${v}</option>`).join('')}</select><span>${label} (max. ${max})</span></div>`;
+ app.innerHTML=`
+ <div class="crumb" onclick="go('examMenu',${i})">← ${EXAMS[i].name}</div>
+ <h1>🗣️ Sprechen <span class="badge">ca. 15 Minuten</span></h1>
+ <p class="lead">Die mündliche Prüfung ist eine Gruppenprüfung mit maximal 4 Teilnehmenden. Üben Sie laut – am besten mit einem Partner!</p>
+ <div class="card"><h2>Teil 1 · Sich vorstellen (3 Punkte)</h2>
+  <p>Stellen Sie sich vor. Sprechen Sie laut zu diesen Stichworten:</p>
+  <div class="pill-row"><span class="badge">Name?</span><span class="badge">Alter?</span><span class="badge">Land?</span><span class="badge">Wohnort?</span><span class="badge">Sprachen?</span><span class="badge">Beruf?</span><span class="badge">Hobby?</span></div>
+  <p style="margin-top:8px"><em>Danach:</em> Buchstabieren Sie Ihren Namen und nennen Sie Ihre Telefonnummer – das fragen die Prüfer immer!</p>
+  <div class="muster" style="margin-top:10px">Beispiel: Mein Name ist Ali Khan. Ich bin 25 Jahre alt. Ich komme aus Pakistan, aus Lahore. Ich wohne in Lahore. Ich spreche Urdu, Punjabi, Englisch und ein bisschen Deutsch. Ich bin Student. Mein Hobby ist Cricket.\n\nBuchstabieren: A-L-I  K-H-A-N · Telefonnummer: null drei null null – eins zwei drei vier fünf sechs sieben</div>
+ </div>
+ <div class="card"><h2>Teil 2 · Um Informationen bitten und geben (6 Punkte)</h2>
+  <p>Ziehen Sie eine Karte, stellen Sie eine Frage zum Thema. Ihr Partner antwortet.</p>
+  <div class="grid c2" style="margin-top:12px">${P.teil2.map((_,k)=>card(k,'teil2')).join('')}</div>
+ </div>
+ <div class="card"><h2>Teil 3 · Bitten formulieren und reagieren (6 Punkte)</h2>
+  <p>Ziehen Sie eine Karte und formulieren Sie eine Bitte. Ihr Partner reagiert.</p>
+  <div class="grid c2" style="margin-top:12px">${P.teil3.map((_,k)=>card(k,'teil3')).join('')}</div>
+ </div>
+ <div class="card"><h2>Selbstbewertung</h2>
+  <p class="lead">Volle Punktzahl = Aufgabe voll erfüllt und verständlich · halbe Punktzahl = teilweise erfüllt · 0 = nicht erfüllt.</p>
+  ${sel('s1',3,'Teil 1: Sich vorstellen')}
+  ${sel('s2',6,'Teil 2: Fragen und Antworten')}
+  ${sel('s3',6,'Teil 3: Bitten und Reaktionen')}
+  <div id="stotal" style="margin-top:14px"></div>
+ </div>`;
+ updS(i);
+};
+window.flipCard=function(part,idx){const a=document.getElementById(`sca_${part}_${idx}`);a.style.display=a.style.display==='none'?'block':'none';};
+window.speakCard=function(part,idx){const c=EXAMS[curEx].sprechen[part][idx];
+ playScript(part==='teil2'?[[0,c.f],[1,c.a]]:[[0,c.bitte],[1,c.reaktion]],1);};
+window.updS=function(i){
+ const st=ex(i);const sp=st.sprechen;
+ if(sp.s1!=null&&sp.s2!=null&&sp.s3!=null){
+  const raw=sp.s1+sp.s2+sp.s3;sp.raw=raw;sp.done=true;save();
+  document.getElementById('stotal').innerHTML=`<div class="result-big"><div class="total">${raw} / 15</div><div class="pred">= ${scaled(raw)} von 25 Punkten</div><div class="navrow" style="justify-content:center"><button class="btn" onclick="go('results',${i})">📊 Gesamtergebnis →</button></div></div>`;
+ } else document.getElementById('stotal').innerHTML='<p style="color:var(--muted)">Bewerten Sie alle drei Teile, um das Ergebnis zu sehen.</p>';
+};
+
+/* ---------- Results ---------- */
+VIEWS.results=function(i){
+ const st=ex(i);let total=0,all=true,rows='';
+ MODS.forEach(m=>{
+  const d=st[m.key];const sc=d&&d.done?scaled(d.raw):null;
+  if(sc==null)all=false;else total+=sc;
+  rows+=`<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between"><strong>${m.icon} ${m.name}</strong><span>${sc!=null?sc+' / 25':'– noch nicht gemacht –'}</span></div><div class="bar"><i style="width:${sc!=null?sc*4:0}%"></i></div></div>`;
+ });
+ total=Math.round(total*10)/10;
+ let pred='',col='var(--green-dark)';
+ if(!all)pred='Noch nicht alle Module abgeschlossen';
+ else if(total>=90)pred='Sehr gut – bestanden! 🎉';
+ else if(total>=80)pred='Gut – bestanden! 🎉';
+ else if(total>=70)pred='Befriedigend – bestanden! ✅';
+ else if(total>=60)pred='Ausreichend – bestanden ✅';
+ else{pred='Leider nicht bestanden – weiter üben! 💪';col='var(--red)';}
+ app.innerHTML=`
+ <div class="crumb" onclick="go('examMenu',${i})">← ${EXAMS[i].name}</div>
+ <h1>📊 Gesamtergebnis · ${EXAMS[i].name}</h1>
+ <div class="card result-big"><div class="total" style="color:${col}">${all?total:'–'} / 100</div><div class="pred" style="color:${col}">${pred}</div></div>
+ <div class="card">${rows}
+ <p style="color:var(--muted);font-size:.88rem;margin-top:8px">Bestehensgrenze: 60 Punkte. Prädikate: sehr gut 90–100 · gut 80–89,5 · befriedigend 70–79,5 · ausreichend 60–69,5.</p></div>
+ <div class="navrow"><button class="btn" onclick="go('home')">Zur Übersicht</button><button class="btn sec" onclick="if(confirm('Alle Antworten löschen?')){delete S[${i}];save();go('examMenu',${i})}">Test zurücksetzen</button></div>`;
+};
+
+go('home');
+</script>
+</body>
+</html>
