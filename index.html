@@ -351,6 +351,7 @@ sprechen:{
 ];
 /*DATA-END*/
 /* ===================== ENGINE ===================== */
+const RESULT_EMAIL='mbilalmalik1614@gmail.com'; // Ergebnisse werden an diese Adresse geschickt
 const app=document.getElementById('app');
 const timerEl=document.getElementById('timer');
 let S; try{S=JSON.parse(localStorage.getItem('ga1sim')||'{}')}catch(e){S={}}
@@ -703,7 +704,36 @@ VIEWS.results=function(i){
  <div class="card result-big"><div class="total" style="color:${col}">${all?total:'–'} / 100</div><div class="pred" style="color:${col}">${pred}</div></div>
  <div class="card">${rows}
  <p style="color:var(--muted);font-size:.88rem;margin-top:8px">Bestehensgrenze: 60 Punkte. Prädikate: sehr gut 90–100 · gut 80–89,5 · befriedigend 70–79,5 · ausreichend 60–69,5.</p></div>
+ <div class="card"><h2>📤 Ergebnis an den Kursleiter senden</h2>
+  <p style="margin-bottom:10px">Geben Sie Ihren Namen ein und senden Sie Ihr Ergebnis ab:</p>
+  <input type="text" id="pname" placeholder="Ihr Name (z. B. Ali Khan)" value="${esc(S.name||'')}" style="max-width:380px">
+  <div class="navrow"><button class="btn" id="sendBtn" onclick="sendResult(${i})">📤 Ergebnis senden</button></div>
+  <div id="sendfb" class="feedback"></div>
+ </div>
  <div class="navrow"><button class="btn" onclick="go('home')">Zur Übersicht</button><button class="btn sec" onclick="if(confirm('Alle Antworten löschen?')){delete S[${i}];save();go('examMenu',${i})}">Test zurücksetzen</button></div>`;
+};
+
+window.sendResult=async function(i){
+ const name=document.getElementById('pname').value.trim();
+ if(!name){alert('Bitte geben Sie zuerst Ihren Namen ein.');return;}
+ S.name=name;save();
+ const st=ex(i);
+ const data={_subject:'Goethe A1 Ergebnis: '+name+' ('+EXAMS[i].name+')',_template:'table',Name:name,Test:EXAMS[i].name,Datum:new Date().toLocaleString('de-DE')};
+ let total=0,all=true;
+ MODS.forEach(m=>{const d=st[m.key];const sc=d&&d.done?scaled(d.raw):null;
+  data[m.name]=sc!=null?sc+' / 25':'nicht gemacht';
+  if(sc!=null)total+=sc;else all=false;});
+ total=Math.round(total*10)/10;
+ data.Gesamt=(all?total:total+' (unvollständig)')+' / 100';
+ if(all)data.Bestanden=total>=60?'JA ✓':'NEIN ✗';
+ const btn=document.getElementById('sendBtn'),fb=document.getElementById('sendfb');
+ btn.disabled=true;btn.textContent='Wird gesendet…';
+ try{
+  const r=await fetch('https://formsubmit.co/ajax/'+RESULT_EMAIL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)});
+  const j=await r.json();
+  if(j&&(j.success===true||j.success==='true')){fb.className='feedback ok';fb.textContent='✓ Ihr Ergebnis wurde gesendet. Vielen Dank!';btn.textContent='Gesendet ✓';}
+  else throw new Error('fail');
+ }catch(e){fb.className='feedback no';fb.textContent='✗ Senden fehlgeschlagen. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es noch einmal.';btn.disabled=false;btn.textContent='📤 Ergebnis senden';}
 };
 
 go('home');
