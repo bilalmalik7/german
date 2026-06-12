@@ -618,17 +618,36 @@ let voices=[];
 function loadVoices(){voices=speechSynthesis.getVoices();}
 loadVoices(); if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=loadVoices;
 function deVoice(){return voices.find(v=>/de[-_]DE/i.test(v.lang))||voices.find(v=>/^de/i.test(v.lang))||null;}
+function pickVoices(){
+ const de=voices.filter(v=>/^de/i.test(v.lang));
+ if(!de.length)return [null,null];
+ let f=de.find(v=>/(anna|katja|petra|marlene|vicki|amala|female|weiblich)/i.test(v.name))||de[0];
+ let m=de.find(v=>v!==f&&/(male|männlich|hans|stefan|markus|conrad|daniel|kevin|google)/i.test(v.name))||de.find(v=>v!==f)||f;
+ return [f,m];
+}
+function gong(cb){
+ try{const ctx=new (window.AudioContext||window.webkitAudioContext)();
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);o.frequency.value=659;o.type='sine';
+  g.gain.setValueAtTime(.25,ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.7);
+  o.start();o.stop(ctx.currentTime+.7);}catch(e){}
+ if(cb)setTimeout(cb,750);
+}
 function playScript(script,times){
  speechSynthesis.cancel();
- const v=deVoice();
+ const [vf,vm]=pickVoices();
+ const sameVoice=!vf||vf===vm;
  for(let r=0;r<times;r++){
-  script.forEach((line,idx)=>{
+  script.forEach(line=>{
    const u=new SpeechSynthesisUtterance(line[1]);
-   u.lang='de-DE'; if(v)u.voice=v;
-   u.rate=0.85; u.pitch=line[0]===0?1.25:0.8;
+   u.lang='de-DE';
+   const v=line[0]===0?vf:vm; if(v)u.voice=v;
+   u.rate=0.85;
+   u.pitch=sameVoice?(line[0]===0?1.25:0.8):1;
    speechSynthesis.speak(u);
   });
-  if(r<times-1){const p=new SpeechSynthesisUtterance('—');p.lang='de-DE';if(v)p.voice=v;p.volume=0;p.rate=.3;speechSynthesis.speak(p);}
+  if(r<times-1){const p=new SpeechSynthesisUtterance('. . . . . .');if(vf)p.voice=vf;p.lang='de-DE';p.volume=0.01;p.rate=.5;speechSynthesis.speak(p);}
  }
 }
 function stopAudio(){speechSynthesis.cancel();}
@@ -729,10 +748,10 @@ VIEWS.examMenu=function(i){
 
 /* ---------- Hören ---------- */
 VIEWS.hoeren=function(i){
- curEx=i;const H=EXAMS[i].hoeren;const st=ex(i);st.hoeren=st.hoeren||{ans:{},done:false};
+ curEx=i;playsUsed={};const H=EXAMS[i].hoeren;const st=ex(i);st.hoeren=st.hoeren||{ans:{},done:false};
  let n=0,html='';
  const item=(idx,inner)=>`<div class="task-item" id="task_${idx}">${inner}</div>`;
- const playbar=(part,idx,times)=>`<div class="playbar">▶️ <button class="btn small" onclick="playH('${part}',${idx},${times})">Audio abspielen</button> <button class="btn small ghost" onclick="stopAudio()">⏹ Stopp</button><span class="count">Sie hören den Text ${times===2?'zweimal':'einmal'}.</span></div>`;
+ const playbar=(part,idx,times)=>`<div class="playbar">▶️ <button class="btn small" id="pb_${part}_${idx}" onclick="playH('${part}',${idx},${times})">Audio abspielen (${times===2?'2×':'1×'})</button> <button class="btn small ghost" onclick="stopAudio()">⏹ Stopp</button><span class="count" id="pc_${part}_${idx}">noch nicht gehört</span></div>`;
  H.teil1.forEach((t,k)=>{n++;
   html+=item('t1_'+k,`<span class="qnum">${n}.</span> <strong>${esc(t.q)}</strong>${playbar('teil1',k,2)}
    <div class="opts">${t.opts.map((o,oi)=>`<div class="opt" id="h_t1_${k}_${oi}" onclick="pickH('t1',${k},${oi},3)"><span class="letter">${'abc'[oi]}</span> ${esc(o)}</div>`).join('')}</div>`);
@@ -749,6 +768,7 @@ VIEWS.hoeren=function(i){
  <div class="crumb" onclick="go('examMenu',${i})">← ${EXAMS[i].name}</div>
  <h1>🎧 Hören <span class="badge">ca. 20 Minuten</span></h1>
  <p class="lead">Dieser Test hat drei Teile. Sie hören kurze Gespräche und Ansagen. Lesen Sie zuerst die Aufgabe, hören Sie dann den Text dazu. <em>Tipp: Für das Audio braucht Ihr Browser eine deutsche Stimme (Text-to-Speech).</em></p>
+ <div class="navrow" style="margin-bottom:14px"><button class="btn small sec" id="pmBtn" onclick="togglePractice()">🔒 Prüfungsmodus: jeder Text nur wie erlaubt – klicken für Übungsmodus</button></div>
  <div class="card"><h2>Teil 1 · Was ist richtig? Kreuzen Sie an: a, b oder c.</h2>${html}</div>
  <div class="card"><h2>Teil 2 · Kreuzen Sie an: Richtig oder Falsch.</h2>${t2}</div>
  <div class="card"><h2>Teil 3 · Was ist richtig? Kreuzen Sie an: a, b oder c.</h2>${t3}</div>
@@ -757,7 +777,21 @@ VIEWS.hoeren=function(i){
  startTimer(20);
  if(st.hoeren.done)scoreH(i,true);
 };
-window.playH=function(part,idx,times){playScript(EXAMS[curEx].hoeren[part==='teil1'?'teil1':part==='teil2'?'teil2':'teil3'][idx].script,times);};
+let playsUsed={},hPractice=false;
+window.togglePractice=function(){
+ hPractice=!hPractice;
+ const b=document.getElementById('pmBtn');
+ if(b)b.textContent=hPractice?'🔓 Übungsmodus: unbegrenzt hören – klicken für Prüfungsmodus':'🔒 Prüfungsmodus: jeder Text nur wie erlaubt – klicken für Übungsmodus';
+ if(hPractice)document.querySelectorAll('[id^=pb_]').forEach(x=>x.disabled=false);
+};
+window.playH=function(part,idx,times){
+ const key=curEx+'_'+part+'_'+idx;
+ if(!hPractice&&playsUsed[key]){alert('Wie in der echten Prüfung: Sie haben diesen Text schon gehört! Aktivieren Sie oben den Übungsmodus, um ihn noch einmal zu hören.');return;}
+ playsUsed[key]=(playsUsed[key]||0)+1;
+ const c=document.getElementById('pc_'+part+'_'+idx);if(c)c.textContent='gehört ✓';
+ if(!hPractice){const b=document.getElementById('pb_'+part+'_'+idx);if(b)b.disabled=true;}
+ gong(()=>playScript(EXAMS[curEx].hoeren[part][idx].script,times));
+};
 window.pickH=function(teil,k,v,nOpts){
  const st=ex(curEx);st.hoeren=st.hoeren||{ans:{}};st.hoeren.ans[teil+'_'+k]=v;save();
  if(teil==='t2'){[0,1].forEach(o=>document.getElementById(`h_t2_${k}_${o}`).classList.toggle('sel',o===v));}
@@ -925,12 +959,28 @@ VIEWS.sprechen=function(i){
   <div class="grid c2" style="margin-top:12px">${P.teil3.map((_,k)=>card(k,'teil3')).join('')}</div>
  </div>
  <div class="card"><h2>🎤 KI-Sprechtraining</h2>
-  <p>Sprechen Sie laut auf Deutsch – z. B. Ihre Vorstellung aus Teil 1. Der Browser schreibt mit, dann analysiert die KI Ihre Sätze und gibt Tipps. <em>(Funktioniert am besten in Google Chrome, Mikrofon erlauben!)</em></p>
+  <p>Wählen Sie einen Prüfungsteil, sprechen Sie laut auf Deutsch – der Browser schreibt mit, dann analysiert und bewertet die KI Ihre Sätze. <em>(Funktioniert am besten in Google Chrome, Mikrofon erlauben!)</em></p>
+  <div class="pill-row">
+   <button class="btn small" id="spm1" onclick="setSpMode(1)">Teil 1: Vorstellung</button>
+   <button class="btn small ghost" id="spm2" onclick="setSpMode(2)">Teil 2: Fragen stellen</button>
+   <button class="btn small ghost" id="spm3" onclick="setSpMode(3)">Teil 3: Bitten</button>
+  </div>
+  <p id="spInstr" style="color:var(--muted);font-size:.92rem">Stellen Sie sich vor: Name, Alter, Land, Wohnort, Sprachen, Beruf, Hobby.</p>
   <div class="navrow"><button class="btn" id="recBtn" onclick="toggleRec()">🎤 Aufnahme starten</button>
   <button class="btn sec" onclick="analyzeSpeech()">✨ Analysieren</button>
   <button class="btn ghost" onclick="document.getElementById('transcript').textContent='';document.getElementById('transcript').dataset.final='';document.getElementById('spAna').innerHTML=''">Löschen</button></div>
   <div class="readtext" id="transcript" style="min-height:70px" data-final=""></div>
   <div id="spAna"></div>
+ </div>
+ <div class="card"><h2>🔁 Aussprache-Trainer (Nachsprechen)</h2>
+  <p>Hören Sie den Satz, dann sprechen Sie ihn nach. Die KI vergleicht Wort für Wort und bewertet Ihre Aussprache.</p>
+  <div class="muster" id="echoSent" style="font-size:1.15rem"></div>
+  <div class="navrow">
+   <button class="btn sec" onclick="newEcho()">🔄 Neuer Satz</button>
+   <button class="btn" onclick="speakEcho()">🔊 Anhören</button>
+   <button class="btn" id="echoRecBtn" onclick="echoRec()">🎤 Nachsprechen</button>
+  </div>
+  <div id="echoOut"></div>
  </div>
  <div class="card"><h2>Selbstbewertung</h2>
   <p class="lead">Volle Punktzahl = Aufgabe voll erfüllt und verständlich · halbe Punktzahl = teilweise erfüllt · 0 = nicht erfüllt.</p>
@@ -939,7 +989,7 @@ VIEWS.sprechen=function(i){
   ${sel('s3',6,'Teil 3: Bitten und Reaktionen')}
   <div id="stotal" style="margin-top:14px"></div>
  </div>`;
- updS(i);
+ updS(i);newEcho();
 };
 window.flipCard=function(part,idx){const a=document.getElementById(`sca_${part}_${idx}`);a.style.display=a.style.display==='none'?'block':'none';};
 window.speakCard=function(part,idx){const c=EXAMS[curEx].sprechen[part][idx];
@@ -970,29 +1020,59 @@ function renderMatches(ms,text){
    (rep?'<br>💡 Vorschlag: <strong style="color:var(--green-dark)">'+esc(rep)+'</strong>':'')+'</div>';
  }).join('')+(ms.length>15?'<p>… und '+(ms.length-15)+' weitere.</p>':'');
 }
+function highlightText(text,ms){
+ let res='',pos=0;
+ [...ms].sort((a,b)=>a.offset-b.offset).forEach(m=>{
+  if(m.offset<pos)return;
+  res+=esc(text.slice(pos,m.offset))+'<mark style="background:#ffd2d2;border-radius:4px;padding:0 2px" title="'+esc(m.message).replace(/"/g,'&quot;')+'">'+esc(text.substr(m.offset,m.length))+'</mark>';
+  pos=m.offset+m.length;});
+ res+=esc(text.slice(pos));
+ return '<div class="readtext" style="white-space:pre-wrap">'+res+'</div>';
+}
+const REDEMITTEL=['Vielen Dank für deine/Ihre E-Mail.','Ich möchte gern …','Leider kann ich nicht kommen, denn …','Können Sie mir bitte … schicken?','Kannst du bitte …?','Ich freue mich auf …','Bis bald! / Mit freundlichen Grüßen + Name'];
 window.analyzeWriting=async function(i){
  const text=document.getElementById('sw2').value.trim();
  const out=document.getElementById('wAna');
  if(!text){out.innerHTML='<div class="feedback no">Bitte schreiben Sie zuerst Ihren Text.</div>';return;}
  out.innerHTML='<div class="feedback ok">⏳ Die KI analysiert Ihren Text …</div>';
- const W=EXAMS[i].schreiben.teil2;
+ const W=EXAMS[i].schreiben.teil2,st=ex(i);
  const words=text.split(/\s+/).length, low=' '+text.toLowerCase()+' ';
+ const sentences=(text.match(/[.!?]/g)||[]).length;
  const anrede=/(liebe|lieber|sehr geehrte|hallo|guten tag)/.test(low);
  const gruss=/(grüße|gruß|bis bald|tschüss|bis zum)/.test(low);
- let checks=chk(words>=25,'Textlänge: '+words+' Wörter '+(words>=25?'(gut – Ziel: ca. 30)':'(zu kurz! Ziel: ca. 30 Wörter)'));
- checks+=chk(anrede,'Anrede vorhanden (z. B. „Sehr geehrte Damen und Herren“)');
- checks+=chk(gruss,'Grußformel vorhanden (z. B. „Mit freundlichen Grüßen“ + Name)');
- let sugg=anrede&&gruss?1:0.5;
- (W.kw||[]).forEach((ks,k)=>{const hit=ks.some(w=>low.includes(w));if(hit)sugg+=3;
-  checks+=chk(hit,'Inhaltspunkt '+(k+1)+': „'+W.points[k]+'“'+(hit?' ✓ behandelt':' – fehlt noch!'));});
  let matches=[],ltErr=false;
  try{matches=await ltCheck(text);}catch(e){ltErr=true;}
- if(matches.length>=4)sugg=Math.max(0,sugg-1.5);
+ const dens=ltErr?0:matches.length/Math.max(words,1)*10; /* Fehler pro 10 Wörter */
+ let checks=chk(words>=25&&words<=60,'Textlänge: '+words+' Wörter '+(words<25?'(zu kurz! Ziel: ca. 30 Wörter)':words>60?'(sehr lang – ca. 30 Wörter reichen)':'(gut – Ziel: ca. 30)'));
+ checks+=chk(sentences>=3,'Satzzeichen: '+sentences+' Sätze erkannt '+(sentences>=3?'':'– schreiben Sie ganze Sätze mit Punkt!'));
+ checks+=chk(anrede,'Anrede vorhanden (z. B. „Liebe/r …“, „Sehr geehrte Damen und Herren“)');
+ checks+=chk(gruss,'Grußformel + Name am Ende (z. B. „Viele Grüße, Ali“)');
+ const aiCrit=[];
+ (W.kw||[]).forEach((ks,k)=>{
+  const hit=ks.some(w=>low.includes(w));
+  const p=hit?(dens>2.5?1.5:3):0; aiCrit.push(p);
+  checks+=chk(hit,'Inhaltspunkt '+(k+1)+': „'+W.points[k]+'“'+(hit?(p===3?' ✓ voll behandelt':' ✓ behandelt, aber mit sprachlichen Mängeln (1,5 P.)'):' – fehlt! Schreiben Sie 1–2 Sätze dazu.'));
+ });
+ aiCrit.push(anrede&&gruss?1:(anrede||gruss?0.5:0));
+ st.schreiben.aiCrit=aiCrit;save();
+ const total=Math.min(10,aiCrit.reduce((s,v)=>s+v,0));
+ let quality=dens<=1?'Sehr gut – wenige Fehler! 🎉':dens<=2.5?'Gut – aber korrigieren Sie die markierten Fehler.':'Viele Fehler – schreiben Sie kürzere, einfache Sätze (Subjekt + Verb + …).';
  out.innerHTML='<div class="card" style="margin-top:14px"><h2>✨ KI-Analyse</h2>'+
-  '<h3>Checkliste (Prüfer-Kriterien)</h3>'+checks+
-  '<h3>Sprachliche Fehler'+(ltErr?'':' ('+matches.length+')')+'</h3>'+
-  (ltErr?'<p>⚠️ Der Grammatik-Server ist gerade nicht erreichbar. Bitte später noch einmal versuchen.</p>':renderMatches(matches,text))+
-  '<p style="margin-top:10px"><strong>💯 Punkte-Vorschlag der KI: ca. '+Math.min(10,Math.round(sugg*2)/2)+' / 10</strong> – tragen Sie Ihre Bewertung unten bei der Auswertung ein.</p></div>';
+  '<h3>Ihr Text mit markierten Fehlern</h3>'+
+  (ltErr?'<p>⚠️ Grammatik-Server nicht erreichbar – Fehler-Markierung gerade nicht möglich.</p>':highlightText(text,matches)+'<p style="font-size:.85rem;color:var(--muted)">Fahren Sie mit der Maus über eine Markierung für die Erklärung.</p>')+
+  '<h3>Checkliste (echte Prüfer-Kriterien)</h3>'+checks+
+  '<h3>Fehler im Detail'+(ltErr?'':' ('+matches.length+')')+'</h3>'+
+  (ltErr?'':renderMatches(matches,text))+
+  '<h3>Sprachliche Qualität</h3><p>'+quality+'</p>'+
+  '<h3>Nützliche Redemittel für A1</h3><div class="pill-row">'+REDEMITTEL.map(r=>'<span class="tag">'+r+'</span>').join('')+'</div>'+
+  '<div class="result-big" style="padding:14px"><div class="total" style="font-size:2rem">KI-Bewertung: '+total+' / 10</div>'+
+  '<div class="navrow" style="justify-content:center"><button class="btn" onclick="applyAICrit('+i+')">✅ KI-Bewertung in die Auswertung übernehmen</button></div></div></div>';
+};
+window.applyAICrit=function(i){
+ const st=ex(i);if(!st.schreiben.aiCrit)return;
+ st.schreiben.crit=st.schreiben.aiCrit.slice();save();
+ scoreW(i,true);
+ document.getElementById('wres').scrollIntoView({behavior:'smooth'});
 };
 /* Spracherkennung */
 let rec=null,recOn=false;
@@ -1012,32 +1092,94 @@ window.toggleRec=function(){
   if(ev.error==='not-allowed')alert('Bitte erlauben Sie den Mikrofon-Zugriff in Ihrem Browser.');};
  rec.start();recOn=true;btn.textContent='⏹ Aufnahme stoppen';
 };
+let spMode=1;
+window.setSpMode=function(m){
+ spMode=m;
+ [1,2,3].forEach(k=>{const b=document.getElementById('spm'+k);if(b)b.className='btn small'+(k===m?'':' ghost');});
+ const t={1:'Stellen Sie sich vor: Name, Alter, Land, Wohnort, Sprachen, Beruf, Hobby.',
+  2:'Stellen Sie 2–3 Fragen zu einem Thema (z. B. Einkaufen): „Wann macht der Supermarkt auf?“ – Fragewort oder Verb zuerst!',
+  3:'Formulieren Sie 2–3 Bitten: „Können Sie bitte das Fenster öffnen?“ – mit „bitte“ und „können“!'};
+ const el=document.getElementById('spInstr');if(el)el.textContent=t[m];
+};
+const QWORDS=/(^|[.!?]\s*| und | oder )(wann|wo\b|was\b|wie\b|wer\b|woher|wohin|warum|welche|hast du|haben sie|bist du|sind sie|kannst du|können sie|magst du|gibt es|trinkst du|isst du|machst du|gehst du|arbeitest du|wohnst du|spielst du|fährst du)/gi;
+const BWORDS=/(bitte|können sie|kannst du|könnten sie|geben sie|gib mir|machen sie|mach\b|helfen sie|hilf mir|öffnen sie|schließen sie)/gi;
 window.analyzeSpeech=async function(){
  const el=document.getElementById('transcript');
  const text=(el.dataset.final||el.textContent||'').trim();
  const out=document.getElementById('spAna');
  if(!text){out.innerHTML='<div class="feedback no">Bitte nehmen Sie zuerst etwas auf (🎤) – sprechen Sie laut auf Deutsch.</div>';return;}
- out.innerHTML='<div class="feedback ok">⏳ Die KI analysiert Ihre Aussprache-Mitschrift …</div>';
+ out.innerHTML='<div class="feedback ok">⏳ Die KI analysiert Ihre Sätze …</div>';
  const low=' '+text.toLowerCase()+' ';
- const parts=[
-  [/(heiße|mein name|ich bin )/,'Name genannt („Ich heiße …“)'],
-  [/(jahre alt|bin \d+)/,'Alter genannt („Ich bin … Jahre alt.“)'],
-  [/komme aus/,'Herkunft genannt („Ich komme aus Pakistan.“)'],
-  [/wohne/,'Wohnort genannt („Ich wohne in …“)'],
-  [/spreche/,'Sprachen genannt („Ich spreche Urdu, Englisch …“)'],
-  [/(beruf|arbeite|student|ich bin .*(lehrer|ingenieur|arzt|studentin))/,'Beruf genannt'],
-  [/hobby/,'Hobby genannt („Mein Hobby ist …“)']
- ];
- let checks='',hits=0;
- parts.forEach(p=>{const ok=p[0].test(low);if(ok)hits++;checks+=chk(ok,p[1]);});
- let matches=[],ltErr=false;
- try{matches=(await ltCheck(text)).filter(m=>!/UPPERCASE_SENTENCE_START|PUNCTUATION|COMMA|KOMMA/i.test(m.rule&&m.rule.id||''));}catch(e){ltErr=true;}
  const wc=text.split(/\s+/).length;
- out.innerHTML='<div class="card" style="margin-top:14px"><h2>✨ KI-Analyse Sprechen</h2>'+
-  '<p>Sie haben <strong>'+wc+' Wörter</strong> gesprochen. Vorstellungs-Checkliste: <strong>'+hits+' / 7</strong> Punkte genannt.</p>'+checks+
+ let checks='',scoreLine='',tipp='';
+ if(spMode===1){
+  const parts=[
+   [/(heiße|mein name|ich bin )/,'Name genannt („Ich heiße …“)'],
+   [/(jahre alt|bin \d+)/,'Alter genannt („Ich bin … Jahre alt.“)'],
+   [/komme aus/,'Herkunft genannt („Ich komme aus Pakistan.“)'],
+   [/wohne/,'Wohnort genannt („Ich wohne in …“)'],
+   [/spreche/,'Sprachen genannt („Ich spreche Urdu, Englisch …“)'],
+   [/(beruf|arbeite|student)/,'Beruf genannt („Ich bin … von Beruf.“)'],
+   [/hobby/,'Hobby genannt („Mein Hobby ist …“)']
+  ];
+  let hits=0;parts.forEach(p=>{const ok=p[0].test(low);if(ok)hits++;checks+=chk(ok,p[1]);});
+  const sg=hits>=6?3:hits>=4?1.5:0;
+  scoreLine='Vorstellung: <strong>'+hits+' / 7</strong> Punkte genannt → <strong>KI-Vorschlag Teil 1: '+sg+' / 3 Punkte</strong>';
+  tipp='💡 Üben Sie auch das Buchstabieren Ihres Namens und Ihre Telefonnummer – danach fragen die Prüfer immer!';
+ }else if(spMode===2){
+  const qs=(text.match(QWORDS)||[]).length;
+  checks+=chk(qs>=1,'Mindestens 1 Frage erkannt ('+qs+' gefunden)');
+  checks+=chk(qs>=2,'Mehrere Fragen gestellt (Ziel: 2–3)');
+  checks+=chk(wc>=10,'Genug gesprochen ('+wc+' Wörter)');
+  const sg=qs>=2&&wc>=10?6:qs>=1?3:0;
+  scoreLine='<strong>KI-Vorschlag Teil 2: '+sg+' / 6 Punkte</strong>';
+  tipp='💡 Eine gute A1-Frage beginnt mit einem Fragewort (Wann? Wo? Was?) oder mit dem Verb (Hast du …? Können Sie …?).';
+ }else{
+  const bs=(text.match(BWORDS)||[]).length;
+  checks+=chk(bs>=1,'Mindestens 1 Bitte erkannt ('+bs+' gefunden)');
+  checks+=chk(/bitte/.test(low),'Das Wort „bitte“ benutzt – sehr wichtig für die Höflichkeit!');
+  checks+=chk(bs>=2,'Mehrere Bitten formuliert (Ziel: 2)');
+  const sg=bs>=2?6:bs>=1?3:0;
+  scoreLine='<strong>KI-Vorschlag Teil 3: '+sg+' / 6 Punkte</strong>';
+  tipp='💡 Höfliche Bitten: „Können Sie bitte …?“ / „Geben Sie mir bitte …!“ – und reagieren Sie: „Ja, natürlich!“';
+ }
+ let matches=[],ltErr=false;
+ try{matches=(await ltCheck(text)).filter(m=>!/UPPERCASE_SENTENCE_START|PUNCTUATION|COMMA|KOMMA|GERMAN_SPELLER_RULE_KOMMA/i.test((m.rule&&m.rule.id)||''));}catch(e){ltErr=true;}
+ out.innerHTML='<div class="card" style="margin-top:14px"><h2>✨ KI-Analyse Sprechen – Teil '+spMode+'</h2>'+
+  '<p>Sie haben <strong>'+wc+' Wörter</strong> gesprochen. '+scoreLine+'</p>'+checks+
   '<h3>Sprachliche Hinweise</h3>'+
   (ltErr?'<p>⚠️ Grammatik-Server nicht erreichbar – bitte später erneut versuchen.</p>':renderMatches(matches,text))+
-  '<p style="margin-top:10px">💡 Tipp: Nennen Sie alle 7 Punkte und üben Sie auch das Buchstabieren Ihres Namens und Ihre Telefonnummer – danach fragen die Prüfer immer!</p></div>';
+  '<p style="margin-top:10px">'+tipp+'</p></div>';
+};
+/* Aussprache-Trainer */
+let echoSentence='';
+function normW(s){return s.toLowerCase().replace(/[.,!?;:„“"']/g,'').split(/\s+/).filter(Boolean);}
+window.newEcho=function(){
+ const P=EXAMS[curEx].sprechen;
+ const bank=P.teil2.map(c=>c.f).concat(P.teil2.map(c=>c.a),P.teil3.map(c=>c.bitte));
+ echoSentence=bank[Math.floor(Math.random()*bank.length)];
+ const el=document.getElementById('echoSent');if(el)el.textContent=echoSentence;
+ const o=document.getElementById('echoOut');if(o)o.innerHTML='';
+};
+window.speakEcho=function(){if(!echoSentence)newEcho();playScript([[0,echoSentence]],1);};
+window.echoRec=function(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){alert('Spracherkennung wird von diesem Browser nicht unterstützt. Bitte Google Chrome oder Edge benutzen.');return;}
+ const btn=document.getElementById('echoRecBtn');btn.textContent='🔴 Sprechen Sie jetzt …';btn.disabled=true;
+ const r=new SR();r.lang='de-DE';r.continuous=false;r.interimResults=false;
+ r.onresult=e=>{
+  const spoken=e.results[0][0].transcript;
+  const T=normW(echoSentence),Sp=normW(spoken);
+  const bag=new Set(Sp);
+  let ok=0;
+  const marks=T.map(w=>{const hit=bag.has(w);if(hit)ok++;return '<span style="color:'+(hit?'var(--green-dark)':'var(--red)')+';font-weight:700">'+esc(w)+(hit?' ✓':' ✗')+'</span>';}).join(' ');
+  const pct=Math.round(ok/T.length*100);
+  const grade=pct>=90?'Ausgezeichnet! 🎉':pct>=70?'Gut! Fast perfekt.':pct>=50?'Nicht schlecht – noch einmal langsam üben.':'Versuchen Sie es noch einmal – langsam und deutlich sprechen.';
+  document.getElementById('echoOut').innerHTML='<div class="card" style="margin-top:12px"><p><strong>Sie sagten:</strong> „'+esc(spoken)+'“</p><p style="margin-top:8px">'+marks+'</p><div class="result-big" style="padding:10px"><div class="total" style="font-size:2rem">'+pct+' %</div><div class="pred" style="font-size:1rem">'+grade+'</div></div></div>';
+ };
+ r.onerror=ev=>{if(ev.error==='not-allowed')alert('Bitte erlauben Sie den Mikrofon-Zugriff.');};
+ r.onend=()=>{btn.textContent='🎤 Nachsprechen';btn.disabled=false;};
+ r.start();
 };
 
 /* ---------- Results ---------- */
