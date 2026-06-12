@@ -349,6 +349,251 @@ sprechen:{
   {wort:"helfen",bitte:"Können Sie mir bitte helfen?",reaktion:"Ja, gern. Was kann ich für Sie tun?"},
   {wort:"Uhrzeit",bitte:"Sagen Sie mir bitte die Uhrzeit!",reaktion:"Ja, es ist jetzt halb drei."}
  ]}
+},
+{name:"Modelltest 4 (Offizieller Übungssatz)",
+hoeren:{
+ teil1:[
+  {q:"Wo wollen die Freundinnen die Party machen?",opts:["Im Garten.","Im Haus.","Am See."],correct:0,script:[[0,"Wo wollen wir dieses Jahr unsere Party machen?"],[1,"Ich bin für eine Feier am See. Wir können schwimmen, grillen …"],[0,"Ich bin nicht dafür. Ich finde eine Party im Garten viel besser. Bei Regen können wir schnell ins Haus und im Haus schön weiterfeiern."],[1,"In Ordnung. Da können wir ja auch grillen."]]},
+  {q:"Wann wollen sie sich treffen?",opts:["Um 19.30 Uhr.","Um 20.30 Uhr.","Um 21.00 Uhr."],correct:1,script:[[1,"Möchtest du heute Abend mit mir in das Konzert gehen?"],[0,"Gern. Aber wann beginnt das Konzert? Ich bin ja bis um halb acht im Spanisch-Kurs."],[1,"Dann gibt es kein Problem. Die fangen um neun Uhr an. Wollen wir uns um halb neun an der Kasse treffen?"],[0,"Ja, wunderbar. Dann bis heute Abend."]]},
+  {q:"Wo stehen Taxis?",opts:["An der Ecke rechts.","Die Straße geradeaus.","Geradeaus und links."],correct:2,script:[[0,"Entschuldigen Sie bitte. Ich suche ein Taxi, vielleicht dort vorne rechts?"],[1,"Nein, da vorne rechts gibt es keine. Gehen Sie hier geradeaus und an der Ecke nach links. Sie müssen dann noch circa 100 Meter gehen. Da stehen schon die Taxis."],[0,"Vielen Dank."]]},
+  {q:"Wie lange dauern die Sommerkurse?",opts:["Zwei Wochen.","Drei Wochen.","Vier Wochen."],correct:0,script:[[1,"Guten Tag. Ich möchte einen Sprachkurs besuchen. Wie lange dauern Ihre Kurse?"],[0,"Die Sommerkurse jetzt im Juli und August zwei Wochen. Unsere normalen Kurse dauern aber drei oder vier Wochen."],[1,"Gut. Ich möchte einen Sommerkurs, Anfang Juli."]]},
+  {q:"Was soll Johanna mitbringen?",opts:["Salat.","Saft.","Karten."],correct:2,script:[[1,"Hallo Johanna, wir treffen uns heute Nachmittag im Park. Kommst du auch?"],[0,"Ja, gerne. Soll ich was mitbringen?"],[1,"Vielleicht ein Kartenspiel."],[0,"Okay. Und etwas zu essen?"],[1,"Nein, das machen wir schon. Ich bringe Salat mit und Clara Saft."]]},
+  {q:"Wann ist Frau Horn aus dem Urlaub zurück?",opts:["Am Mittwoch.","Am Freitag.","Am Montag."],correct:2,script:[[0,"Guten Tag. Ich möchte bitte Frau Horn sprechen."],[1,"Frau Horn ist leider nicht im Büro. Sie ist von Mittwoch bis Freitag im Urlaub. Aber am Montag kommt sie aus dem Urlaub zurück. Ab acht Uhr ist sie im Büro."],[0,"Aha, na dann rufe ich nächste Woche wieder an."]]}
+ ],
+ teil2:[
+  {s:"Die Fahrgäste sollen den Bus nehmen.",correct:true,script:[[0,"Liebe Fahrgäste, diese Straßenbahn hat ein Problem mit den Türen. Sie schließen nicht mehr richtig. Leider können wir nicht weiterfahren. Bitte steigen Sie an der nächsten Haltestelle aus. Dort haben Sie Anschluss an den Bus Linie 19."]]},
+  {s:"Die Kunden sollen in den zweiten Stock kommen.",correct:false,script:[[1,"Liebe Kunden, heute haben wir tolle Sonderangebote bei den Badmöbeln. Kommen Sie doch mal in den dritten Stock und sehen Sie sich um. Und am Wochenende feiert unser Möbelhaus Geburtstag. Sie sind herzlich eingeladen!"]]},
+  {s:"Die Leute sollen zu Hause bleiben.",correct:true,script:[[1,"Achtung. Hier spricht die Polizei. Es gibt ein großes Feuer in der Firma Chemotec. Bitte schließen Sie alle Türen und Fenster und gehen Sie nicht aus dem Haus."]]},
+  {s:"Fahrgäste nach Innsbruck sollen mit dem ICE 346 fahren.",correct:true,script:[[0,"Willkommen in Berlin Hauptbahnhof. Ihre nächsten Züge: ICE 389 nach Dresden 18 Uhr 48, Gleis 3. Intercity nach Innsbruck 18 Uhr 52 fährt heute nicht. Fahrgäste nach Innsbruck benutzen bitte den ICE 346 nach München um 19 Uhr 20 und steigen dort um."]]}
+ ],
+ teil3:[
+  {q:"Wann will Greta das Formular holen?",opts:["Heute Abend.","Morgen.","Montagmorgen."],correct:2,script:[[0,"Hallo Barbara, hier Greta. Ich will am Montagmorgen das Formular für die Wohnungsanmeldung holen. Möchtest du mitkommen? Du kannst dich ja dann auch gleich beim Amt anmelden. Bitte ruf mich noch heute Abend an. Morgen hat das Amt keine Sprechstunden. Tschüss."]]},
+  {q:"Wo möchte Heinz Siggi treffen?",opts:["Am Bahnhof.","Im italienischen Restaurant.","Im Restaurant „Zwiebel“."],correct:0,script:[[1,"Hallo Siggi, hier Heinz. Es geht um heute Abend. Ich sehe gerade, das Restaurant Zwiebel hat heute geschlossen. Können wir uns am Bahnhof treffen und dann zusammen ein anderes Restaurant suchen? Das italienische Restaurant um die Ecke soll gut und nicht teuer sein. Bis heute Abend."]]},
+  {q:"Wann möchte Eva Schmitz am Mittwoch kommen?",opts:["Um 10.00 Uhr.","Um 11.00 Uhr.","Um 12.00 Uhr."],correct:0,script:[[0,"Guten Tag, hier Eva Schmitz. Leider bin ich krank und kann morgen nicht kommen. Geht es auch am Mittwoch um 10 Uhr? Da habe ich sowieso einen Termin von 11 bis 12 Uhr in Ihrem Institut."]]},
+  {q:"Was soll man sagen?",opts:["Die Adresse.","Die E-Mail-Adresse.","Die Telefonnummer."],correct:2,script:[[1,"Guten Tag, Sie rufen wegen der Wohnungsanzeige an? Die genaue Adresse ist Am Achterkamp 5. Bitte sprechen Sie Ihre Nummer auf den Anrufbeantworter, ich rufe Sie dann zurück und sage Ihnen, wann Sie die Wohnung sehen können. Bitte keine E-Mail-Adressen!"]]},
+  {q:"Wie kommt Herr Müller ins Büro?",opts:["Mit dem Fahrrad.","Mit der Straßenbahn.","Mit dem Auto."],correct:0,script:[[1,"Guten Morgen, Frau Seiler. Hier Ernst Müller. Mein Auto ist leider kaputt. Ich muss das Fahrrad nehmen und komme also ein bisschen später ins Büro. Die Straßenbahn ist zu weit weg von mir zu Hause. Bitte entschuldigen Sie mich bei Herrn Krause. Danke."]]}
+ ]},
+lesen:{
+ teil1:[
+  {text:"Liebe Frau Dehner,\nvielen Dank für die Einladung zu Ihrem Jazz-Konzert. Ich komme gern und ich freue mich sehr auf das Konzert. Ich danke Ihnen auch, dass ich in Ihrem Gästezimmer schlafen kann und kein Hotel suchen muss. Mein Zug kommt schon um circa 16 Uhr an. Kann ich Ihnen am Nachmittag dann vor dem Konzert etwas helfen?\nBis bald und herzliche Grüße\nWinfried Beck",
+   items:[{s:"Herr Beck übernachtet im Hotel.",correct:false},{s:"Herr Beck bietet Frau Dehner seine Hilfe an.",correct:true}]},
+  {text:"Sehr geehrter Herr Dr. Falk,\nich bin diese Woche beruflich in Berlin. Ich möchte gern mit Ihnen über das neue Projekt sprechen. Am Mittwoch muss ich leider den ganzen Tag auf einer Konferenz arbeiten. Aber am Freitag habe ich Zeit. Können wir uns am Freitag um 14 Uhr in Ihrem Büro treffen?\nMit freundlichen Grüßen\nMartina Stein",
+   items:[{s:"Frau Stein ist in Berlin.",correct:true},{s:"Am Mittwoch hat Frau Stein frei.",correct:false},{s:"Frau Stein will am Freitag Dr. Falk treffen.",correct:true}]}
+ ],
+ teil2:[
+  {sit:"Sie wollen viele Freunde zu Ihrem Geburtstag einladen. Sie suchen einen Ort.",a:{url:"www.raum-in-koeln.de",txt:"Raum für Tanz, Sport, Hochzeiten und andere private Feiern zu vermieten.\nAuch abends Termine frei, günstige Preise"},b:{url:"www.wohnen-in-koeln.de",txt:"Schöne Zimmer und Apartments für 2–12 Wochen im Großraum Köln zu interessanten Preisen."},correct:0},
+  {sit:"Der Computer ist kaputt. Sie können ihn nicht allein reparieren.",a:{url:"www.computer-loesungen.de",txt:"Für alles, was mit Computern, Druckern, Scannern, Internet usw. zu tun hat. Auch Reparaturen."},b:{url:"www.technohaus.de",txt:"Gebrauchte Kühlschränke, Herde, Waschmaschinen, Computer, Drucker, Fernseher, Radios, Handys usw. zu supergünstigen Preisen!"},correct:0},
+  {sit:"Sie möchten am Samstagabend mit Freunden tanzen gehen.",a:{url:"www.tanzen-macht-spass.de",txt:"Tanzschule Renz\nInformieren Sie sich jetzt über die neuen Tanzkurse für Jugendliche und Erwachsene."},b:{url:"www.wohin-am-wochenende.de",txt:"Ins Aladin! Das neue Tanz-Restaurant. Erst gut essen, dann tanzen – die ganze Nacht!\nFreitag + Samstag haben wir bis 4 Uhr geöffnet"},correct:1},
+  {sit:"Sie möchten am Wochenende Fußball spielen.",a:{url:"www.freizeitsport-freiburg.de",txt:"Basketball, Fitness, Fußball und mehr.\nMontags bis donnerstags 18.30 bis 21.00 Uhr im Südpark am See."},b:{url:"www.fc-1897.de/training",txt:"Der Fußballklub FC 1897 sucht Spieler und Spielerinnen.\nTreffpunkt: Sportanlage Ulrichsplatz, sonntags 10–12 Uhr. Keine Anmeldung."},correct:1},
+  {sit:"Sie studieren und möchten ein bisschen arbeiten.",a:{url:"Anzeige A · Tel. 0176 – 55 44 321",txt:"Unsere Bäckerei braucht Hilfe.\n42-Stunden-Woche bei guter Bezahlung."},b:{url:"Anzeige B · Tel. 0160 – 683 456 20",txt:"Junge Verkäuferin/Junger Verkäufer gesucht für Zeitungskiosk.\nVerkauf am Samstag von 7 bis 11 Uhr."},correct:1}
+ ],
+ teil3:[
+  {loc:"Vor einem Blumenladen",sign:"Neu! Neu! Neu!\nLiebe Kunden!\nAb sofort haben wir auch sonntags\nvon 9–12 Uhr für Sie geöffnet!",s:"Am Sonntagvormittag bekommen Sie hier Blumen.",correct:true},
+  {loc:"Im Restaurant",sign:"Liebe Gäste,\nim nächsten Monat kocht bei uns ein Koch\naus Kalkutta indische Spezialitäten.\nWir freuen uns auf Ihren Besuch.",s:"Jeden Montag bietet das Restaurant indisches Essen an.",correct:false},
+  {loc:"Bei der Straßenbahn",sign:"Linie 8:\nAb 1.5. nur bis Hauptbahnhof.\nZur Weiterfahrt nach Huchting:\nLinie 1 oder Bus Nr. 53",s:"Es ist der 2. Mai, 21 Uhr. Sie können jetzt nicht zum Hauptbahnhof fahren.",correct:false},
+  {loc:"An einer Haustür",sign:"Die Wohnungsbesichtigung heute um 18 Uhr\nfällt leider aus.\nNeuer Termin: Samstag, 11 Uhr",s:"Sie können die Wohnung heute nicht besichtigen.",correct:true},
+  {loc:"Im Bahnhof",sign:"Reisezentrum: täglich 6–22 Uhr geöffnet.\nFahrkarten bekommen Sie auch\nam Automaten – rund um die Uhr.",s:"Ab 22 Uhr können Sie keine Fahrkarten mehr kaufen.",correct:false}
+ ]},
+schreiben:{
+ teil1:{
+  scenario:"Ihr Freund, Vladimir Serjakov, 30 Jahre alt, kommt aus Sankt Petersburg in Russland und lebt seit einem Monat in Hamburg. Er hat eine neue Stelle bei TUI als Reiseleiter. Seit gestern hat er 39 Grad Fieber. Heute geht er zum Arzt.\n\nIn dem Formular fehlen fünf Informationen. Helfen Sie Ihrem Freund und schreiben Sie die fünf fehlenden Informationen in das Formular.",
+  formTitle:"Anmeldung – Arztpraxis",
+  fields:[
+   {label:"Familienname, Vorname",given:"Serjakov, Vladimir"},
+   {label:"Wohnort",answers:["hamburg"]},
+   {label:"Alter",answers:["30","dreißig","30 jahre"]},
+   {label:"Beruf",answers:["reiseleiter"]},
+   {label:"Krank seit",answers:["gestern","seit gestern"]},
+   {label:"Beschwerden",answers:["fieber","39 grad fieber","ich habe fieber"]}
+  ]},
+ teil2:{
+  task:"Ihr neuer Kollege, Herr Jensch, lädt Sie am Dienstag um 15 Uhr zu seiner Geburtstagsfeier im Büro ein. Schreiben Sie Herrn Jensch eine E-Mail:",
+  points:["Warum schreiben Sie?","Sagen Sie: später kommen.","Fragen Sie: helfen?"],
+  kw:[["einladung","danke","geburtstag"],["später","komme"],["helfen","helfe","mitbringen"]],
+  muster:"Lieber Herr Jensch,\n\nvielen Dank für Ihre Einladung. Leider komme ich später. Am Dienstag um 14 Uhr muss ich zum Arzt gehen. Um 15.30 Uhr kann ich zu Ihrer Geburtstagsfeier kommen. Kann ich Ihnen helfen? Ich kann einen Kuchen mitbringen.\n\nHerzliche Grüße\nSara Ahmed"}},
+sprechen:{
+ teil2:[
+  {theme:"Beruf",wort:"Arbeitszeit",f:"Wie lange arbeiten Sie jeden Tag?",a:"Ich arbeite acht Stunden, von 9 bis 17 Uhr."},
+  {theme:"Beruf",wort:"Kollegen",f:"Wie viele Kollegen haben Sie?",a:"Ich habe zehn Kollegen. Sie sind sehr nett."},
+  {theme:"Beruf",wort:"Arbeitsplatz",f:"Wo ist Ihr Arbeitsplatz?",a:"Mein Büro ist im Stadtzentrum, in der Nähe vom Bahnhof."},
+  {theme:"Beruf",wort:"Aufgaben",f:"Was machen Sie bei der Arbeit?",a:"Ich schreibe E-Mails und telefoniere viel mit Kunden."},
+  {theme:"Sport",wort:"Lieblingssport",f:"Was ist dein Lieblingssport?",a:"Mein Lieblingssport ist Cricket."},
+  {theme:"Sport",wort:"schwimmen",f:"Kannst du schwimmen?",a:"Ja, ich schwimme jeden Samstag im Schwimmbad."},
+  {theme:"Sport",wort:"Wochenende",f:"Machst du am Wochenende Sport?",a:"Ja, am Sonntag spiele ich mit Freunden Fußball."},
+  {theme:"Sport",wort:"Fahrrad",f:"Fährst du oft Fahrrad?",a:"Ja, ich fahre jeden Tag mit dem Fahrrad zur Arbeit."}
+ ],
+ teil3:[
+  {wort:"Taxi",bitte:"Rufen Sie mir bitte ein Taxi!",reaktion:"Ja, gern. Einen Moment, bitte."},
+  {wort:"Telefonnummer",bitte:"Geben Sie mir bitte Ihre Telefonnummer!",reaktion:"Ja, natürlich. Meine Nummer ist 0301 234567."},
+  {wort:"Radio",bitte:"Machen Sie bitte das Radio leiser!",reaktion:"Oh, Entschuldigung. Ja, sofort."},
+  {wort:"Termin",bitte:"Können wir bitte einen Termin um 18 Uhr machen?",reaktion:"Ja, 18 Uhr passt gut."},
+  {wort:"Koffer",bitte:"Können Sie mir bitte mit dem Koffer helfen?",reaktion:"Ja, natürlich helfe ich Ihnen."},
+  {wort:"Geld wechseln",bitte:"Können Sie mir bitte 50 Euro wechseln?",reaktion:"Einen Moment … ja, hier bitte."}
+ ]}
+}
+,{name:"Modelltest 5",
+hoeren:{
+ teil1:[
+  {q:"Wann hat Herr Khan einen Termin beim Arzt?",opts:["Um 9.30 Uhr.","Um 10.30 Uhr.","Um 13.30 Uhr."],correct:1,script:[[0,"Praxis Doktor Lehmann, guten Tag."],[1,"Guten Tag, Khan hier. Ich habe morgen um 9 Uhr 30 einen Termin. Kann ich später kommen?"],[0,"Moment … ja, um 10 Uhr 30 ist noch frei. Geht das?"],[1,"Ja, 10 Uhr 30 ist perfekt. Vielen Dank!"]]},
+  {q:"Was kostet das Brot?",opts:["1,80 Euro.","2,80 Euro.","8,20 Euro."],correct:1,script:[[1,"Guten Morgen. Ein Brot bitte. Was kostet das?"],[0,"Das Bauernbrot kostet 2 Euro 80."],[1,"Gut, dann nehme ich das. Und zwei Brötchen bitte."],[0,"Gern. Das macht zusammen 3 Euro 60."]]},
+  {q:"Von welchem Gleis fährt der Zug nach München?",opts:["Gleis 5.","Gleis 15.","Gleis 12."],correct:2,script:[[1,"Entschuldigung, von welchem Gleis fährt der Zug nach München?"],[0,"Normalerweise von Gleis 5, aber heute fährt er von Gleis 12."],[1,"Gleis 12, danke schön!"]]},
+  {q:"Was trinkt die Frau?",opts:["Wasser.","Kaffee.","Orangensaft."],correct:2,script:[[1,"Was möchten Sie trinken? Einen Kaffee?"],[0,"Nein danke, keinen Kaffee. Es ist so heiß heute. Haben Sie Orangensaft?"],[1,"Ja, natürlich. Mit Eis?"],[0,"Ja, gerne mit Eis."]]},
+  {q:"Wann beginnt der Deutschkurs?",opts:["Am Montag.","Am Mittwoch.","Am Donnerstag."],correct:1,script:[[1,"Guten Tag, wann beginnt der neue Deutschkurs A1?"],[0,"Der Kurs beginnt nächste Woche am Mittwoch um 18 Uhr."],[1,"Nicht am Montag?"],[0,"Nein, der Montagskurs ist leider schon voll. Aber mittwochs ist noch Platz."]]},
+  {q:"Wo arbeitet Herr Weber?",opts:["Im Krankenhaus.","In einer Schule.","In einer Bank."],correct:0,script:[[0,"Herr Weber, was sind Sie von Beruf?"],[1,"Ich bin Krankenpfleger. Ich arbeite im Krankenhaus am Stadtpark."],[0,"Oh, interessant! Meine Schwester ist Lehrerin in der Schule gleich daneben."]]}
+ ],
+ teil2:[
+  {s:"Die Kunden bekommen heute Käse billiger.",correct:true,script:[[1,"Liebe Kundinnen und Kunden, heute an unserer Käsetheke: Alle Käsesorten 20 Prozent billiger! Besuchen Sie uns im Untergeschoss. Guten Einkauf!"]]},
+  {s:"Die Passagiere nach Dubai sollen zum Ausgang A5 gehen.",correct:false,script:[[0,"Achtung bitte, eine Durchsage: Der Flug EK 612 nach Dubai startet heute nicht vom Ausgang A5, sondern vom Ausgang C3. Passagiere nach Dubai bitte zum Ausgang C3."]]},
+  {s:"Der Zug nach Hamburg hat 20 Minuten Verspätung.",correct:true,script:[[1,"Information zu ICE 502 nach Hamburg, planmäßige Abfahrt 16 Uhr 10: Dieser Zug hat heute circa 20 Minuten Verspätung. Wir bitten um Entschuldigung."]]},
+  {s:"Das Kaufhaus schließt in 30 Minuten.",correct:false,script:[[0,"Liebe Kunden, unser Kaufhaus schließt in 15 Minuten. Bitte gehen Sie zu den Kassen im Erdgeschoss. Morgen sind wir ab 9 Uhr wieder für Sie da. Vielen Dank für Ihren Einkauf."]]}
+ ],
+ teil3:[
+  {q:"Wann soll Frau Begum zum Zahnarzt kommen?",opts:["Am Dienstag um 14 Uhr.","Am Donnerstag um 14 Uhr.","Am Donnerstag um 16 Uhr."],correct:1,script:[[0,"Guten Tag, Frau Begum, hier Zahnarztpraxis Doktor Roth. Ihr Termin am Dienstag fällt leider aus. Können Sie am Donnerstag um 14 Uhr kommen? Bitte rufen Sie uns kurz zurück. Danke."]]},
+  {q:"Welchen Film sehen die Freunde?",opts:["Einen Krimi.","Eine Komödie.","Einen Liebesfilm."],correct:1,script:[[1,"Hallo Ahmed, hier Tarik. Wegen Samstag: Der Krimi läuft nicht mehr im Kino. Aber es gibt eine neue Komödie, die soll sehr lustig sein. Die sehen wir, okay? Bis Samstag!"]]},
+  {q:"Wann kommt das Paket?",opts:["Heute Vormittag.","Morgen Vormittag.","Morgen Nachmittag."],correct:2,script:[[0,"Guten Tag, hier ist der Paketservice. Wir konnten Ihr Paket heute leider nicht liefern. Wir kommen morgen Nachmittag zwischen 14 und 17 Uhr noch einmal. Bitte seien Sie zu Hause."]]},
+  {q:"Was soll Yusuf kaufen?",opts:["Reis und Tee.","Reis und Zucker.","Tee und Zucker."],correct:0,script:[[0,"Hallo Yusuf, hier ist Mama. Kannst du auf dem Heimweg in den Supermarkt gehen? Wir brauchen Reis und Tee. Zucker haben wir noch genug. Danke, mein Junge!"]]},
+  {q:"Wann beginnt das Meeting?",opts:["Um 8.30 Uhr.","Um 9.00 Uhr.","Um 9.30 Uhr."],correct:2,script:[[1,"Guten Morgen, Frau Aziz, hier Bergmann. Das Meeting heute beginnt nicht um 9 Uhr, sondern erst um 9 Uhr 30. Der Chef kommt später aus Berlin zurück. Bis dann!"]]}
+ ]},
+lesen:{
+ teil1:[
+  {text:"Lieber Imran,\nwie geht es dir? Ich habe gute Nachrichten: Ich habe die A1-Prüfung bestanden! Die Prüfung war gar nicht so schwer. Das Hören war einfach, aber beim Schreiben hatte ich wenig Zeit. Jetzt mache ich im September den A2-Kurs. Er kostet 200 Euro, aber meine Firma bezahlt die Hälfte.\nViele Grüße aus Karachi\nDein Adnan",
+   items:[{s:"Adnan hat die Prüfung bestanden.",correct:true},{s:"Adnan bezahlt den A2-Kurs ganz allein.",correct:false}]},
+  {text:"Liebe Nadia,\nam Samstag ziehe ich um! Meine neue Wohnung ist in der Akazienstraße 12, im dritten Stock. Sie hat zwei Zimmer und einen kleinen Balkon. Kannst du mir beim Umzug helfen? Mein Bruder kommt auch und wir haben ein großes Auto. Wir fangen um 10 Uhr an. Als Dankeschön koche ich abends für alle!\nDeine Selma",
+   items:[{s:"Selma hat eine neue Wohnung mit Balkon.",correct:true},{s:"Der Umzug beginnt am Samstagabend.",correct:false},{s:"Selma kocht für ihre Helfer.",correct:true}]}
+ ],
+ teil2:[
+  {sit:"Sie sind krank und brauchen schnell einen Arzttermin.",a:{url:"www.termin-beim-arzt.de",txt:"Arzttermine online buchen\nFreie Termine heute und morgen in Ihrer Stadt\nAlle Fachärzte"},b:{url:"www.medizin-studieren.de",txt:"Medizin studieren in Deutschland\nInfos zu Universitäten und Bewerbung"},correct:0},
+  {sit:"Sie möchten heute Abend Pizza zu Hause essen.",a:{url:"www.pizzeria-napoli-restaurant.de",txt:"Pizzeria Napoli\nGenießen Sie italienisches Essen in unserem Restaurant\nReservierung empfohlen"},b:{url:"www.blitz-lieferdienst.de",txt:"Blitz-Lieferdienst\nPizza, Pasta, Salate – in 30 Minuten bei Ihnen zu Hause\nOnline bestellen"},correct:1},
+  {sit:"Sie möchten schnell Deutsch lernen und haben den ganzen Tag Zeit.",a:{url:"www.intensiv-deutsch.de",txt:"Intensivkurse Deutsch\nMontag bis Freitag, 9–14 Uhr\nA1 bis B2, kleine Gruppen"},b:{url:"www.deutsch-am-samstag.de",txt:"Deutsch am Samstag\nKurse nur samstags 10–13 Uhr\nLangsam und gründlich lernen"},correct:0},
+  {sit:"Sie suchen ein günstiges gebrauchtes Auto.",a:{url:"www.autohaus-premium.de",txt:"Autohaus Premium\nNeuwagen aller Marken\nFinanzierung möglich"},b:{url:"www.gebrauchtwagen-boerse.de",txt:"Gebrauchtwagen-Börse\nÜber 10.000 gebrauchte Autos ab 1.500 Euro\nVon privat und vom Händler"},correct:1},
+  {sit:"Ihre Tochter (6 Jahre) soll schwimmen lernen.",a:{url:"www.schwimmschule-delfin.de",txt:"Schwimmschule Delfin\nSchwimmkurse für Kinder ab 5 Jahren\nAnfängerkurse jeden Monat neu"},b:{url:"www.schwimmverein-masters.de",txt:"Schwimmverein Masters\nTraining für erwachsene Leistungsschwimmer\nWettkämpfe und mehr"},correct:0}
+ ],
+ teil3:[
+  {loc:"An der Arztpraxis",sign:"Praxis Dr. Schäfer\nSprechzeiten: Mo, Di, Do 8–12 und 15–18 Uhr\nMi und Fr nur 8–12 Uhr",s:"Am Mittwochnachmittag hat die Praxis geöffnet.",correct:false},
+  {loc:"Im Supermarkt",sign:"Heute Verkostung!\nProbieren Sie unseren neuen Mango-Joghurt\nam Stand in der Milchabteilung – gratis!",s:"Sie können den Joghurt kostenlos probieren.",correct:true},
+  {loc:"An der Haltestelle",sign:"Umleitung!\nDie Busse der Linie 14 halten diese Woche\nnicht hier, sondern am Rathausplatz.",s:"Der Bus 14 hält diese Woche am Rathausplatz.",correct:true},
+  {loc:"An der Bibliothek",sign:"Achtung:\nAb nächstem Monat neue Öffnungszeiten!\nMo–Sa 9–20 Uhr (bisher 10–18 Uhr)",s:"Die Bibliothek hat ab nächstem Monat länger geöffnet.",correct:true},
+  {loc:"Im Hotel",sign:"Frühstück: 6.30 – 10.00 Uhr im Restaurant\nAm Wochenende bis 11.00 Uhr",s:"Am Sonntag gibt es bis 11 Uhr Frühstück.",correct:true}
+ ]},
+schreiben:{
+ teil1:{
+  scenario:"Ihr Freund, Murat Demir, möchte Mitglied im Sportverein „Aktiv“ in Berlin werden. Er ist am 02.05.1990 geboren und wohnt in der Kantstraße 44 in 10625 Berlin. Er interessiert sich für den Schwimmkurs am Abend. Er möchte den Mitgliedsbeitrag bar bezahlen. Seine Telefonnummer ist 030 8877665.\n\nIn dem Formular fehlen fünf Informationen. Helfen Sie Ihrem Freund und schreiben Sie die fünf fehlenden Informationen in das Formular.",
+  formTitle:"Anmeldung – Sportverein Aktiv, Berlin",
+  fields:[
+   {label:"Familienname, Vorname",given:"Demir, Murat"},
+   {label:"Geburtsdatum",answers:["02.05.1990","2.5.1990","2. mai 1990"]},
+   {label:"Straße, Hausnummer",answers:["kantstraße 44","kantstrasse 44"]},
+   {label:"PLZ, Wohnort",given:"10625, Berlin"},
+   {label:"Kurs",answers:["schwimmkurs","schwimmen","schwimmkurs am abend"]},
+   {label:"Kurszeit (Vormittag / Abend)",answers:["abend","am abend","abends"]},
+   {label:"Zahlungsweise (Bar / Karte)",answers:["bar"]}
+  ]},
+ teil2:{
+  task:"Sie können am Freitag nicht zum Abendessen bei Ihrer Freundin Lena kommen. Schreiben Sie an Lena:",
+  points:["Warum schreiben Sie?","Warum können Sie nicht kommen?","Schlagen Sie einen neuen Termin vor."],
+  kw:[["freitag","kommen","abendessen","leider"],["krank","arbeiten","muss","besuch","termin"],["samstag","sonntag","nächste woche","wann"]],
+  muster:"Liebe Lena,\n\nvielen Dank für deine Einladung zum Abendessen am Freitag. Leider kann ich nicht kommen, denn ich muss am Freitag lange arbeiten. Hast du am Samstag Zeit? Dann können wir zusammen essen.\n\nViele Grüße\nAmna"}},
+sprechen:{
+ teil2:[
+  {theme:"Freizeit",wort:"Musik",f:"Welche Musik hörst du gern?",a:"Ich höre gern Popmusik und manchmal klassische Musik."},
+  {theme:"Freizeit",wort:"Buch",f:"Liest du gern Bücher?",a:"Ja, ich lese jeden Abend ein bisschen."},
+  {theme:"Freizeit",wort:"Fernsehen",f:"Was siehst du gern im Fernsehen?",a:"Ich sehe gern Filme und Cricket-Spiele."},
+  {theme:"Freizeit",wort:"Freunde",f:"Was machst du mit deinen Freunden?",a:"Wir trinken Tee zusammen und sprechen viel."},
+  {theme:"Essen und Trinken",wort:"Mittagessen",f:"Was isst du zum Mittagessen?",a:"Meistens Reis mit Gemüse oder Hähnchen."},
+  {theme:"Essen und Trinken",wort:"kochen",f:"Wer kocht bei Ihnen zu Hause?",a:"Meine Mutter kocht, aber am Sonntag koche ich."},
+  {theme:"Essen und Trinken",wort:"Getränk",f:"Was trinkst du am Morgen?",a:"Ich trinke jeden Morgen Chai, also Tee mit Milch."},
+  {theme:"Essen und Trinken",wort:"Markt",f:"Wo kaufst du Obst und Gemüse?",a:"Auf dem Markt. Dort ist alles frisch und billig."}
+ ],
+ teil3:[
+  {wort:"Tafel",bitte:"Schreiben Sie das Wort bitte an die Tafel!",reaktion:"Ja, natürlich. Einen Moment."},
+  {wort:"Salz",bitte:"Geben Sie mir bitte das Salz!",reaktion:"Ja, hier bitte."},
+  {wort:"Fahrkarte",bitte:"Eine Fahrkarte nach Berlin, bitte!",reaktion:"Gern. Das macht 45 Euro."},
+  {wort:"warten",bitte:"Warten Sie bitte fünf Minuten!",reaktion:"Ja, kein Problem. Ich warte hier."},
+  {wort:"Heizung",bitte:"Können Sie bitte die Heizung anmachen? Mir ist kalt.",reaktion:"Ja, sofort. Es ist wirklich kalt heute."},
+  {wort:"E-Mail",bitte:"Schicken Sie mir bitte eine E-Mail!",reaktion:"Ja, mache ich heute Abend."}
+ ]}
+}
+,{name:"Modelltest 6",
+hoeren:{
+ teil1:[
+  {q:"Wie wird das Wetter am Wochenende?",opts:["Es regnet.","Es ist sonnig und warm.","Es schneit."],correct:1,script:[[1,"Und nun das Wetter für das Wochenende: Am Samstag und Sonntag wird es sonnig und warm, bis 28 Grad. Erst am Montag kommt Regen."]]},
+  {q:"Welche Größe braucht der Mann?",opts:["Größe 48.","Größe 50.","Größe 52."],correct:1,script:[[1,"Entschuldigung, ich suche dieses Hemd in Größe 48."],[0,"Moment … Größe 48 haben wir leider nicht mehr. Probieren Sie doch Größe 50, die Hemden sind klein geschnitten."],[1,"Gut, dann nehme ich Größe 50."]]},
+  {q:"Wann treffen sich die Kollegen?",opts:["Um 12 Uhr.","Um 12.30 Uhr.","Um 13 Uhr."],correct:2,script:[[0,"Gehen wir heute zusammen Mittag essen?"],[1,"Ja, gern. Um 12 Uhr?"],[0,"Da habe ich noch eine Besprechung bis halb eins. Geht auch 13 Uhr?"],[1,"Ja, 13 Uhr ist okay. Bis dann in der Kantine!"]]},
+  {q:"Wie viele Kinder hat Frau Öztürk?",opts:["Ein Kind.","Zwei Kinder.","Drei Kinder."],correct:2,script:[[1,"Frau Öztürk, haben Sie Kinder?"],[0,"Ja, drei! Zwei Töchter und einen Sohn."],[1,"Oh, wie schön! Und wie alt sind sie?"],[0,"Die Mädchen sind 7 und 9, mein Sohn ist noch klein, zwei Jahre."]]},
+  {q:"Wie fährt die Familie in den Urlaub?",opts:["Mit dem Flugzeug.","Mit dem Auto.","Mit dem Zug."],correct:2,script:[[0,"Fliegt ihr im Sommer wieder nach Spanien?"],[1,"Nein, fliegen ist uns zu teuer geworden. Mit dem Auto ist es zu weit. Wir fahren dieses Jahr mit dem Zug nach Österreich."],[0,"Mit dem Zug? Das ist ja entspannt!"]]},
+  {q:"Was kostet das Doppelzimmer?",opts:["79 Euro.","97 Euro.","107 Euro."],correct:0,script:[[1,"Guten Tag, haben Sie ein Doppelzimmer für Samstag frei?"],[0,"Ja, wir haben noch eines frei. Es kostet 79 Euro pro Nacht inklusive Frühstück."],[1,"79 Euro, das ist gut. Ich nehme es."]]}
+ ],
+ teil2:[
+  {s:"Die Kunden können heute länger einkaufen.",correct:true,script:[[0,"Liebe Kundinnen und Kunden, eine gute Nachricht: Wegen des Stadtfestes hat unser Kaufhaus heute bis 22 Uhr geöffnet, also zwei Stunden länger als sonst. Viel Spaß beim Einkaufen!"]]},
+  {s:"Die Fahrgäste nach Wien sollen am Gleis 7 warten.",correct:false,script:[[1,"Achtung am Gleis 7: Der EuroCity nach Wien fährt heute von Gleis 11 ab. Fahrgäste nach Wien begeben sich bitte zu Gleis 11."]]},
+  {s:"Die Eltern sollen ihre Kinder um 15 Uhr abholen.",correct:true,script:[[0,"Liebe Eltern, das Sommerfest der Grundschule endet heute um 15 Uhr. Bitte holen Sie Ihre Kinder um 15 Uhr am Haupteingang ab. Vielen Dank!"]]},
+  {s:"Das Flugzeug nach London startet pünktlich.",correct:false,script:[[1,"Information zum Flug BA 905 nach London: Wegen des Wetters startet diese Maschine heute mit circa 45 Minuten Verspätung. Wir bitten um Ihr Verständnis."]]}
+ ],
+ teil3:[
+  {q:"Wo ist der Schlüssel?",opts:["Beim Nachbarn.","Unter der Matte.","Im Briefkasten."],correct:2,script:[[0,"Hallo Karim, ich bin schon zur Arbeit gefahren. Dein Schlüssel liegt im Briefkasten. Nicht beim Nachbarn, da war niemand zu Hause. Bis heute Abend!"]]},
+  {q:"Wann beginnt der Kochkurs?",opts:["Um 17 Uhr.","Um 18 Uhr.","Um 19 Uhr."],correct:1,script:[[1,"Guten Tag, hier ist die Volkshochschule. Ihr Kochkurs am Donnerstag beginnt nicht um 19 Uhr, sondern schon um 18 Uhr. Bitte kommen Sie pünktlich. Auf Wiederhören!"]]},
+  {q:"Was ist im Angebot?",opts:["Mangos.","Orangen.","Bananen."],correct:0,script:[[0,"Liebe Kunden, heute im Angebot in unserer Obstabteilung: frische Mangos aus Pakistan, das Kilo nur 3 Euro 99. Greifen Sie zu!"]]},
+  {q:"Wann kommt der Handwerker?",opts:["Heute um 16 Uhr.","Morgen um 8 Uhr.","Morgen um 16 Uhr."],correct:1,script:[[1,"Guten Tag, hier Firma Wolf, es geht um Ihre Heizung. Heute schaffen wir es leider nicht mehr. Unser Techniker kommt morgen früh um 8 Uhr. Bitte seien Sie zu Hause. Danke."]]},
+  {q:"Welche Hausnummer hat Frau Binder?",opts:["Nummer 13.","Nummer 30.","Nummer 33."],correct:2,script:[[0,"Hallo, hier ist Eva Binder. Sie bringen morgen die Möbel, ja? Also noch einmal die Adresse: Gartenweg 33. Ich wiederhole: Gartenweg 33, nicht 13! Klingeln Sie bei Binder. Danke!"]]}
+ ]},
+lesen:{
+ teil1:[
+  {text:"Lieber Daniel,\ndanke für deine E-Mail! Ja, ich habe Zeit und hole dich am Freitag vom Flughafen ab. Dein Flug landet um 17.40 Uhr, richtig? Ich warte dann in der Ankunftshalle beim Café. Am Samstag zeige ich dir die Stadt, und am Abend gehen wir zu meiner Schwester. Sie kocht für uns.\nGute Reise und bis Freitag!\nDein Faisal",
+   items:[{s:"Faisal holt Daniel vom Bahnhof ab.",correct:false},{s:"Am Samstagabend essen sie bei Faisals Schwester.",correct:true}]},
+  {text:"Hallo Petra,\nkleine Änderung für unseren Deutschkurs: Frau Berger ist diese Woche krank. Der Unterricht am Dienstag fällt aus. Am Donnerstag haben wir aber normal Kurs – mit einem neuen Lehrer, Herrn Vogel. Bring bitte das Arbeitsbuch mit, wir machen Übungen zur Grammatik. Die Hausaufgaben von letzter Woche sammelt Herr Vogel auch ein.\nLiebe Grüße\nMonika",
+   items:[{s:"Am Dienstag gibt es keinen Unterricht.",correct:true},{s:"Frau Berger gibt den Kurs am Donnerstag.",correct:false},{s:"Petra soll das Arbeitsbuch mitbringen.",correct:true}]}
+ ],
+ teil2:[
+  {sit:"Sie möchten am Sonntag mit der Familie frühstücken gehen.",a:{url:"www.cafe-sonnenschein.de",txt:"Café Sonnenschein\nGroßes Frühstücksbuffet jeden Samstag und Sonntag 9–13 Uhr\nKinder unter 6 Jahren gratis"},b:{url:"www.baeckerei-fruehauf.de",txt:"Bäckerei Frühauf\nFrische Brötchen und Brot\nMo–Sa ab 6 Uhr, sonntags geschlossen"},correct:0},
+  {sit:"Ihr Handy ist kaputt. Sie brauchen schnell ein neues.",a:{url:"www.handy-reparatur-blitz.de",txt:"Handy-Reparatur Blitz\nWir reparieren Ihr Handy in 24 Stunden\nDisplay, Akku, Wasserschaden"},b:{url:"www.phone-discount.de",txt:"Phone-Discount\nNeue Smartphones ab 99 Euro\nHeute bestellt – morgen geliefert"},correct:1},
+  {sit:"Sie möchten am Abend Urdu-Essen kochen und suchen Gewürze.",a:{url:"www.asia-orient-markt.de",txt:"Asia-Orient-Markt\nGewürze, Reis, Linsen aus Indien und Pakistan\nMo–Sa 9–20 Uhr"},b:{url:"www.kochbuch-welt.de",txt:"Kochbuch-Welt\nKochbücher aus aller Welt\nVersand in 2–3 Tagen"},correct:0},
+  {sit:"Sie haben Zahnschmerzen. Es ist Sonntag.",a:{url:"www.zahnarzt-praxis-weiss.de",txt:"Zahnarztpraxis Dr. Weiß\nSprechzeiten: Mo–Fr 8–18 Uhr\nTermine online buchen"},b:{url:"www.zahn-notdienst.de",txt:"Zahnärztlicher Notdienst\nHilfe bei Schmerzen – auch am Wochenende und an Feiertagen\nTelefon: 116 117"},correct:1},
+  {sit:"Sie möchten Ihrer Freundin Blumen zum Geburtstag schicken.",a:{url:"www.blumen-direkt.de",txt:"Blumen-Direkt\nBlumensträuße online bestellen und liefern lassen\nLieferung am selben Tag"},b:{url:"www.garten-center-gruen.de",txt:"Garten-Center Grün\nAlles für Ihren Garten: Pflanzen, Erde, Werkzeug"},correct:0}
+ ],
+ teil3:[
+  {loc:"Am Geldautomaten",sign:"Dieser Geldautomat ist außer Betrieb.\nDer nächste Automat:\nHauptstraße 7 (neben der Post)",s:"Sie können hier kein Geld bekommen.",correct:true},
+  {loc:"In der Sprachschule",sign:"Prüfung A1 am Samstag:\nBitte bringen Sie Ihren Pass\nund einen Kuli mit.\nHandys sind nicht erlaubt!",s:"Sie dürfen Ihr Handy in der Prüfung benutzen.",correct:false},
+  {loc:"An der Apotheke",sign:"Notdienst heute Nacht:\nApotheke am Markt, Marktplatz 3\n(geöffnet bis 8 Uhr morgens)",s:"Sie können heute Nacht in der Apotheke am Markt Medikamente kaufen.",correct:true},
+  {loc:"Im Bus",sign:"Bitte beim Fahrer nur mit\npassendem Geld bezahlen.\nTickets auch per App: stadtbus24",s:"Sie können das Ticket mit dem Handy kaufen.",correct:true},
+  {loc:"Am Kindergarten",sign:"Liebe Eltern,\nder Kindergarten bleibt am Freitag\nwegen einer Fortbildung geschlossen.",s:"Die Kinder können am Freitag in den Kindergarten gehen.",correct:false}
+ ]},
+schreiben:{
+ teil1:{
+  scenario:"Ihre Freundin, Zainab Hussain, meldet ihre Tochter Aliya (geboren am 10.09.2019) in der Grundschule „Am Park“ in Frankfurt an. Die Familie wohnt in der Bergstraße 8 in 60316 Frankfurt. Aliya spricht Urdu und Deutsch. Zainab ist unter 069 4455667 erreichbar. Aliya soll am Mittagessen in der Schule teilnehmen.\n\nIn dem Formular fehlen fünf Informationen. Helfen Sie Ihrer Freundin und schreiben Sie die fünf fehlenden Informationen in das Formular.",
+  formTitle:"Anmeldung – Grundschule Am Park, Frankfurt",
+  fields:[
+   {label:"Name des Kindes",answers:["hussain, aliya","aliya hussain","aliya"]},
+   {label:"Geburtsdatum des Kindes",answers:["10.09.2019","10.9.2019","10. september 2019"]},
+   {label:"Straße, Hausnummer",given:"Bergstraße 8"},
+   {label:"PLZ, Wohnort",given:"60316, Frankfurt"},
+   {label:"Sprachen des Kindes",answers:["urdu und deutsch","urdu, deutsch","urdu deutsch"]},
+   {label:"Telefon",answers:["069 4455667","0694455667"]},
+   {label:"Mittagessen in der Schule? (ja / nein)",answers:["ja"]}
+  ]},
+ teil2:{
+  task:"Sie kommen am Freitag mit dem Zug nach Frankfurt. Schreiben Sie an Ihre Freundin Julia:",
+  points:["Warum schreiben Sie?","Wann kommt Ihr Zug an?","Bitten Sie: Julia soll Sie abholen."],
+  kw:[["freitag","komme","besuche","frankfurt","zug"],["uhr","ankunft","kommt an"],["abholen","bahnhof","holst"]],
+  muster:"Liebe Julia,\n\nich komme am Freitag nach Frankfurt und möchte dich besuchen! Mein Zug kommt um 16.30 Uhr am Hauptbahnhof an. Kannst du mich bitte vom Bahnhof abholen? Ich freue mich sehr auf dich!\n\nViele Grüße\nHina"}},
+sprechen:{
+ teil2:[
+  {theme:"Wohnen",wort:"Wohnung",f:"Wie groß ist deine Wohnung?",a:"Meine Wohnung hat drei Zimmer und einen Balkon."},
+  {theme:"Wohnen",wort:"Zimmer",f:"Was ist dein Lieblingszimmer?",a:"Mein Lieblingszimmer ist die Küche. Ich koche gern."},
+  {theme:"Wohnen",wort:"Miete",f:"Ist deine Wohnung teuer?",a:"Ja, ich bezahle 800 Euro Miete im Monat."},
+  {theme:"Wohnen",wort:"Nachbarn",f:"Wie sind Ihre Nachbarn?",a:"Meine Nachbarn sind sehr freundlich und helfen oft."},
+  {theme:"Tagesablauf",wort:"aufstehen",f:"Wann stehst du auf?",a:"Ich stehe um 6 Uhr auf, zuerst bete ich."},
+  {theme:"Tagesablauf",wort:"Mittagspause",f:"Was machen Sie in der Mittagspause?",a:"Ich esse mit den Kollegen und trinke einen Tee."},
+  {theme:"Tagesablauf",wort:"Abend",f:"Was machst du am Abend?",a:"Ich esse mit meiner Familie und sehe fern."},
+  {theme:"Tagesablauf",wort:"schlafen",f:"Wann gehst du schlafen?",a:"Meistens um 23 Uhr, am Wochenende später."}
+ ],
+ teil3:[
+  {wort:"Tee",bitte:"Eine Tasse Tee, bitte!",reaktion:"Ja, gern. Mit Milch und Zucker?"},
+  {wort:"Auto",bitte:"Können Sie mich bitte zum Bahnhof fahren?",reaktion:"Ja, natürlich. Steigen Sie ein!"},
+  {wort:"Brille",bitte:"Geben Sie mir bitte meine Brille! Sie liegt auf dem Tisch.",reaktion:"Ja, hier ist Ihre Brille."},
+  {wort:"Musik",bitte:"Machen Sie bitte die Musik aus! Ich telefoniere.",reaktion:"Oh, Entschuldigung. Ja, sofort."},
+  {wort:"Formular",bitte:"Helfen Sie mir bitte mit dem Formular!",reaktion:"Ja, gern. Was verstehen Sie nicht?"},
+  {wort:"Tisch",bitte:"Einen Tisch für zwei Personen, bitte!",reaktion:"Gern. Kommen Sie bitte mit."}
+ ]}
 }
 /*EXAM3-END*/
 ];
@@ -414,7 +659,7 @@ VIEWS.home=function(){
  app.innerHTML=`
  <div class="card" style="background:linear-gradient(135deg,var(--green-light),#fff)">
   <h1>Goethe-Zertifikat A1 · Start Deutsch 1</h1>
-  <p class="lead">Kompletter Prüfungssimulator mit 3 Modelltests im offiziellen Format – Hören, Lesen, Schreiben und Sprechen. Modelltest 1 basiert auf dem offiziellen Modellsatz des Goethe-Instituts.</p>
+  <p class="lead">Kompletter Prüfungssimulator mit 6 Modelltests im offiziellen Format – Hören, Lesen, Schreiben und Sprechen. Modelltest 1 und 4 basieren auf den offiziellen Prüfungssätzen des Goethe-Instituts, Modelltest 2, 3, 5 und 6 auf den häufigsten Themen echter Prüfungen.</p>
   <div class="pill-row">
    <span class="tag">🎧 Hören: TTS-Audio, jeder Text 1× oder 2×</span>
    <span class="tag">⏱️ Echte Prüfungszeiten</span>
@@ -423,6 +668,18 @@ VIEWS.home=function(){
   </div>
  </div>
  ${prog}
+ <div class="card">
+  <h2>🎯 Prüfungsschwerpunkte – das kommt immer wieder dran!</h2>
+  <p class="lead">Analyse der offiziellen Prüfungssätze: Diese Themen erscheinen in fast jeder echten A1-Prüfung. Lernen Sie diese zuerst!</p>
+  <table class="info">
+   <tr><th>Modul</th><th>Häufigste Themen (nach Wichtigkeit)</th></tr>
+   <tr><td>🎧 Hören</td><td><strong>1.</strong> Uhrzeiten &amp; Termine (Arzt, Treffen) · <strong>2.</strong> Preise &amp; Zahlen · <strong>3.</strong> Bahnhof/Flughafen-Durchsagen (Gleis, Verspätung) · <strong>4.</strong> Anrufbeantworter-Nachrichten · <strong>5.</strong> Supermarkt-Durchsagen (Angebote, Stockwerke)</td></tr>
+   <tr><td>📖 Lesen</td><td><strong>1.</strong> E-Mails: Einladung, Besuch, Absage · <strong>2.</strong> Websites vergleichen (Wer bietet was?) · <strong>3.</strong> Schilder: Öffnungszeiten, geschlossen/geöffnet, Verbote, Umleitungen</td></tr>
+   <tr><td>✍️ Schreiben</td><td><strong>Teil 1:</strong> Anmeldeformulare (Kurs, Arzt, Verein, Hotel, Schule) – üben Sie: Geburtsdatum, PLZ, Zahlungsweise! · <strong>Teil 2:</strong> Einladung annehmen/absagen, sich entschuldigen, um Informationen bitten, später kommen</td></tr>
+   <tr><td>🗣️ Sprechen</td><td><strong>Teil 1:</strong> Buchstabieren + Telefonnummer kommt IMMER · <strong>Teil 2:</strong> Themen: Einkaufen, Wochenende, Essen, Beruf, Sport, Familie, Freizeit, Wohnen · <strong>Teil 3:</strong> Alltagsbitten (Wasser, Fenster, Handy, helfen)</td></tr>
+  </table>
+  <p style="margin-top:10px"><strong>Wichtige Wortfelder:</strong> Zahlen bis 1000, Uhrzeiten (halb, Viertel), Wochentage, Monate, Preise, Familie, Berufe, Verkehrsmittel, Lebensmittel.</p>
+ </div>
  <div class="card">
   <h2>ℹ️ Prüfungsformat</h2>
   <table class="info">
